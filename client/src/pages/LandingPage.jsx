@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
+import { getAllCards } from '../api/cards';
+import { SWUCard } from '../components/SWUCard';
 
-export default function App() {
+export function LandingPage() {
   const { isLoggedIn } = useAuth();
+  const [cardList, setCardList] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setCardList(await getAllCards());
+    }
+    fetchData();
+  }, []);
 
   return (
-    <div className='App'>
+    <div className='LandingPage'>
       <Header />
 
       {isLoggedIn ? <LoggedInText /> : <LoggedOutText />}
+
+
+      {cardList.map((card, idx)=> { return <SWUCard key={idx} data={card}/>;})}
     </div>
   );
 }
