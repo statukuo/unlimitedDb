@@ -1,37 +1,37 @@
-import {Fragment, useState} from 'react'
-import {Dialog, DialogTitle, TextField, Button, CircularProgress} from '@mui/material'
-import {useAuth} from '../contexts/AuthContext'
+import { Fragment, useState, React } from 'react';
+import { Dialog, DialogTitle, TextField, Button, CircularProgress } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 
-const textFieldSx = {mx: 2, my: 0.5}
+const textFieldSx = { mx: 2, my: 0.5 };
 
-export default function AuthModal({open, close, isRegisterMode, toggleRegister}) {
-  const {login, register} = useAuth()
+export default function AuthModal({ open, close, isRegisterMode, toggleRegister }) {
+  const { login, register } = useAuth();
 
-  const [formData, setFormData] = useState({})
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const {name, value} = e.target
-    setFormData((prev) => ({...prev, [name]: value}))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const clickSubmit = async () => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError('');
 
     try {
-      isRegisterMode ? await register(formData) : await login(formData)
-      close()
+      isRegisterMode ? await register(formData) : await login(formData);
+      close();
     } catch (error) {
-      setError(error)
+      setError(error);
     }
 
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
-  const disabledLoginButton = !formData['username'] || !formData['password']
-  const disabledRegisterButton = !formData['username'] || !formData['password']
+  const disabledLoginButton = !formData['username'] || !formData['password'];
+  const disabledRegisterButton = !formData['username'] || !formData['password'];
 
   return (
     <Dialog open={open} onClose={close}>
@@ -59,10 +59,10 @@ export default function AuthModal({open, close, isRegisterMode, toggleRegister})
         {isRegisterMode ? 'I already have an account' : "I don't have an account"}
       </Button>
     </Dialog>
-  )
+  );
 }
 
-function LoginForm({formData, handleChange}) {
+function LoginForm({ formData, handleChange }) {
   return (
     <Fragment>
       <DialogTitle>Login to your account</DialogTitle>
@@ -88,10 +88,10 @@ function LoginForm({formData, handleChange}) {
         required
       />
     </Fragment>
-  )
+  );
 }
 
-function RegisterForm({formData, handleChange}) {
+function RegisterForm({ formData, handleChange }) {
   return (
     <Fragment>
       <DialogTitle>Create a new account</DialogTitle>
@@ -117,5 +117,5 @@ function RegisterForm({formData, handleChange}) {
         required
       />
     </Fragment>
-  )
+  );
 }
