@@ -1,5 +1,6 @@
-import {styled} from '@mui/material/styles'
-import {Badge, Avatar} from '@mui/material'
+import React from 'react';
+import {styled} from '@mui/material/styles';
+import {Badge, Avatar} from '@mui/material';
 
 const StyledBadge = styled(Badge)(({theme}) => ({
   '& .MuiBadge-badge': {
@@ -28,21 +29,21 @@ const StyledBadge = styled(Badge)(({theme}) => ({
       opacity: 0,
     },
   },
-}))
+}));
 
-const OnlineBadge = styled(StyledBadge)(({theme}) => ({
+const OnlineBadge = styled(StyledBadge)(() => ({
   '& .MuiBadge-badge': {
     backgroundColor: 'var(--online)',
     color: 'var(--online)',
   },
-}))
+}));
 
-const OfflineBadge = styled(StyledBadge)(({theme}) => ({
+const OfflineBadge = styled(StyledBadge)(() => ({
   '& .MuiBadge-badge': {
     backgroundColor: 'var(--offline)',
     color: 'var(--offline)',
   },
-}))
+}));
 
 export default function OnlineIndicator({online = false, children = <Avatar src='' alt='' />}) {
   return online ? (
@@ -59,5 +60,5 @@ export default function OnlineIndicator({online = false, children = <Avatar src=
       anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}>
       {children}
     </OfflineBadge>
-  )
+  );
 }

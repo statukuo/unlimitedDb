@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react';
 
 /* How to use this hook:
 import useMediaQuery from './hooks/useMediaQuery';
@@ -10,15 +10,15 @@ function App() {
 }; */
 
 export default function useMediaQuery(query = '(max-width: 768px)') {
-  const [matches, setMatches] = useState(window.matchMedia(query).matches)
+  const [matches, setMatches] = useState(window.matchMedia(query).matches);
 
   useEffect(() => {
-    const media = window.matchMedia(query)
-    const listener = () => setMatches(media.matches)
+    const media = window.matchMedia(query);
+    const listener = () => setMatches(media.matches);
 
-    media.addListener(listener)
-    return () => media.removeListener(listener)
-  }, [query])
+    media.addListener(listener);
+    return () => media.removeListener(listener);
+  }, [query]);
 
-  return matches
+  return matches;
 }
