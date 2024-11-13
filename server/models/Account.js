@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const instance = new mongoose.Schema(
   {
@@ -27,10 +27,10 @@ const instance = new mongoose.Schema(
   {
     timestamps: true,
   },
-)
+);
 
 // NOTE! use a singular model name, mongoose automatically creates a collection like so:
 // model: 'Account' === collection: 'accounts'
-const modelName = 'Account'
+const modelName = 'Account';
 
-module.exports = mongoose.model(modelName, instance)
+module.exports = mongoose.model(modelName, instance);
