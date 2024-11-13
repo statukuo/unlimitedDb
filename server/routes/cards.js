@@ -1,9 +1,9 @@
-const express = require('express')
-const getAll = require('../controllers/cards/getAll')
+const express = require('express');
+const getAll = require('../controllers/cards/getAll');
 
 // initialize router
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', [], getAll)
+router.get('/', [], getAll);
 
-module.exports = router
+module.exports = router;
