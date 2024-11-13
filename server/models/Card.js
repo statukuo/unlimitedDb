@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 
 const aspect = new mongoose.Schema({ value: { type: String, enum: ['Vigilance', 'Command', 'Aggression', 'Cunning', 'Villainy', 'Heroism', 'none'] } });
@@ -34,8 +34,8 @@ const instance = new mongoose.Schema(
     artits: { type: String },
     frontArt: { type: String }
   }
-)
+);
 
-const modelName = 'Card'
+const modelName = 'Card';
 
-module.exports = mongoose.model(modelName, instance)
+module.exports = mongoose.model(modelName, instance);

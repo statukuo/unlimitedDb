@@ -17,12 +17,8 @@
     "axios": "*",
     "react": "*",
     "react-dom": "*",
+    "react-router-dom": "^6.28.0",
     "react-scripts": "*"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
   },
   "browserslist": {
     "production": [
