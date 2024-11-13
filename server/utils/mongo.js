@@ -14,6 +14,7 @@ class MongoDB {
     if (this.isConnected) return;
 
     try {
+      console.log(this.MONGO_URI);
       const db = await this.mongoose.connect(this.MONGO_URI, this.MONGO_OPTIONS);
       const connection = db.connection;
 
@@ -24,6 +25,7 @@ class MongoDB {
       connection.on('disconnected', () => console.log('❌ MongoDB disconnected')); // disconnected
       connection.on('error', (error) => console.log('❌ MongoDB connection error', error)); // listen for errors during the session
     } catch (error) {
+      console.log(error);
       console.log('❌ MongoDB connection error:', error.message);
     }
   }
