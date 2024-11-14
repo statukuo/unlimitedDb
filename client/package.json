@@ -10,15 +10,17 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@emotion/react": "*",
-    "@emotion/styled": "*",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@fontsource/roboto": "*",
-    "@mui/material": "*",
+    "@mui/material": "^6.1.7",
+    "@mui/styled-engine-sc": "^6.1.7",
     "axios": "*",
     "react": "*",
     "react-dom": "*",
     "react-router-dom": "^6.28.0",
-    "react-scripts": "*"
+    "react-scripts": "*",
+    "styled-components": "^6.1.13"
   },
   "browserslist": {
     "production": [
