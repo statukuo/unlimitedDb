@@ -5,20 +5,21 @@ import { getAllCards } from '../api/cards';
 import { SWUCard } from '../components/SWUCard';
 import styled from 'styled-components';
 
-const StyledLandingPage = styled.div`
-  width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const StyledCardContainer = styled.div`
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-auto-columns: 1fr;
-`;
+const Styles = {
+  LandingPage: styled.div`
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `,
+  CardContainer: styled.div`
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-columns: 1fr;
+  `
+};
 
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
@@ -32,15 +33,15 @@ export function LandingPage() {
   }, []);
 
   return (
-    <StyledLandingPage className='LandingPage'>
+    <Styles.LandingPage className='LandingPage'>
       <Header />
 
       {isLoggedIn ? <LoggedInText /> : <LoggedOutText />}
 
-      <StyledCardContainer>
+      <Styles.CardContainer>
         {cardList.map((card, idx)=> { return <SWUCard key={idx} data={card}/>;})}
-      </StyledCardContainer>
-    </StyledLandingPage>
+      </Styles.CardContainer>
+    </Styles.LandingPage>
   );
 }
 
