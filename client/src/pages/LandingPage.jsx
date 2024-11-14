@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import { getAllCards } from '../api/cards';
 import { SWUCard } from '../components/SWUCard';
 import styled from 'styled-components';
+import { CardFilter } from '../components/CardFilter';
 
 const Styles = {
   LandingPage: styled.div`
@@ -24,19 +25,26 @@ const Styles = {
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
   const [cardList, setCardList] = useState([]);
+  const [ filters, setFilters] = useState({});
 
   useEffect(() => {
     async function fetchData() {
-      setCardList(await getAllCards());
+      setCardList(await getAllCards(filters));
     }
     fetchData();
-  }, []);
+  }, [filters]);
+
+  const updateFilters = (filters) => {
+    setFilters(filters);
+  };
 
   return (
     <Styles.LandingPage className='LandingPage'>
       <Header />
 
       {isLoggedIn ? <LoggedInText /> : <LoggedOutText />}
+
+      <CardFilter onFilter={updateFilters}/>
 
       <Styles.CardContainer>
         {cardList.map((card, idx)=> { return <SWUCard key={idx} data={card}/>;})}

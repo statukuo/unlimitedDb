@@ -1,5 +1,5 @@
 import axios from '../utils/axios';
 
-export async function getAllCards() {
-    return (await axios.get('/cards')).data;
+export async function getAllCards(filters) {
+    return (await axios.get('/cards', { params: { filters } })).data;
 }
