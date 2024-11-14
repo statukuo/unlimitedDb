@@ -11,7 +11,7 @@ const Styles = {
   FormGroup: styled(FormGroup)`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-auto-columns: 1fr;
   `,
   Button: styled(Button)`

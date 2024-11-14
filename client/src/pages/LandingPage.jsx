@@ -6,20 +6,16 @@ import { SWUCard } from '../components/SWUCard';
 import styled from 'styled-components';
 import { CardFilter } from '../components/CardFilter';
 import { SidePanel } from '../components/SidePanel';
+import { Grid2 as Grid } from '@mui/material';
 
 const Styles = {
   LandingPage: styled.div`
     width: 100vw;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     align-items: center;
   `,
-  CardContainer: styled.div`
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-auto-columns: 1fr;
+  CardContainer: styled(Grid)`
+    max-width: 1200px;
   `
 };
 
@@ -49,8 +45,12 @@ export function LandingPage() {
         <CardFilter onFilter={updateFilters}/>
       </SidePanel>
 
-      <Styles.CardContainer>
-        {cardList.map((card, idx)=> { return <SWUCard key={idx} data={card}/>;})}
+      <Styles.CardContainer container spacing={0.5} columns={12}>
+        {cardList.map((card, idx)=> {
+          return (<Grid item size={{ xs: 12, md: 6, lg: 4 }} key={idx}>
+                    <SWUCard key={idx} data={card}/>
+                  </Grid>);
+          })}
       </Styles.CardContainer>
     </Styles.LandingPage>
   );
