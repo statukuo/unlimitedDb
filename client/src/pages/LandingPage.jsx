@@ -5,6 +5,7 @@ import { getAllCards } from '../api/cards';
 import { SWUCard } from '../components/SWUCard';
 import styled from 'styled-components';
 import { CardFilter } from '../components/CardFilter';
+import { SidePanel } from '../components/SidePanel';
 
 const Styles = {
   LandingPage: styled.div`
@@ -44,7 +45,9 @@ export function LandingPage() {
 
       {isLoggedIn ? <LoggedInText /> : <LoggedOutText />}
 
-      <CardFilter onFilter={updateFilters}/>
+      <SidePanel>
+        <CardFilter onFilter={updateFilters}/>
+      </SidePanel>
 
       <Styles.CardContainer>
         {cardList.map((card, idx)=> { return <SWUCard key={idx} data={card}/>;})}
