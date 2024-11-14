@@ -8,7 +8,6 @@ import styled from 'styled-components';
 const Styles = {
   Card: styled(Card)`
     margin: 10px;
-    width: 450px;
   `,
   CardMedia: styled(CardMedia)`
     height: 140px;
