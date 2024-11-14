@@ -6,7 +6,7 @@ import styled from 'styled-components';
 const Styles = {
   Filters: styled(Card)`
     margin: 10px;
-    width: 900px;
+    height: 100%;
   `
 };
 

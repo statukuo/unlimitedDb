@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { createBrowserRouter, RouterProvider, } from "react-router-dom";
 import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider } from '@mui/material/styles';
 import '@fontsource/roboto';
 import './styles/index.css';
 import { PrivateRoute } from './utils/privateRoute';
@@ -28,10 +29,12 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <CssBaseline />
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </React.StrictMode>
+  <StyledEngineProvider injectFirst>
+    <React.StrictMode>
+      <AuthProvider>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </React.StrictMode>
+  </StyledEngineProvider>
 );
