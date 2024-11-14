@@ -52,7 +52,7 @@ export function SidePanel({children}) {
             Filters
         </Styles.Button>
         <Styles.Overlay $open={openPanel} onClick={() => { console.log("CLOSE"); setOpenPanel(false);}}>
-            <Styles.SidePanel $open={openPanel}>
+            <Styles.SidePanel $open={openPanel} onClick={(event) => event.stopPropagation()}>
                 {children}
             </Styles.SidePanel>
         </Styles.Overlay>

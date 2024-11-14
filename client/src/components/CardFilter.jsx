@@ -5,40 +5,55 @@ import styled from 'styled-components';
 
 const Styles = {
   Filters: styled(Card)`
-    margin: 10px;
     height: 100%;
+    padding-left: 20px;
+  `,
+  FormGroup: styled(FormGroup)`
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-columns: 1fr;
+  `,
+  Button: styled(Button)`
+    margin-left: 20px;
   `
 };
 
 export function CardFilter({onFilter}) {
     const [aspects, setAspects] = useState([]);
+    const [sets, setSets] = useState([]);
 
 
-  const handleChange = (event) => {
+  const handleChange = (event, group, setFunction) => {
     if (event.target.checked) {
-        aspects.push(event.target.name);
-        setAspects(aspects);
+      group.push(event.target.name);
+        setFunction(group);
     } else {
-        setAspects(aspects.filter(aspect => {
-            return aspect !== event.target.name;
+      setFunction(group.filter(item => {
+            return item !== event.target.name;
         }));
     }
   };
 
+  const createFilterGroup = (title, filterFields, group, setFunction) => {
+    return [
+      <h2 key="title">{title}</h2>,
+      <Styles.FormGroup key="filters">
+        {filterFields.map(field => {
+          return <FormControlLabel key={field} control={<Checkbox />} onChange={(event) => handleChange(event, group, setFunction)} name={field} label={field} />;
+        })}
+      </Styles.FormGroup>
+    ];
+  };
+
   return (
     <Styles.Filters>
-      <FormGroup>
-            <p>Aspects</p>
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Vigilance" label="Vigilance" />
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Command" label="Command" />
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Aggression" label="Aggression" />
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Cunning" label="Cunning" />
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Villainy" label="Villainy" />
-            <FormControlLabel control={<Checkbox />} onChange={handleChange} name="Heroism" label="Heroism" />
-        </FormGroup>
-        <Button variant="contained" color="success" onClick={() => onFilter({aspects})}>
-            Filter
-        </Button>
+      {createFilterGroup("Aspects", ["Vigilance", "Command", "Aggression", "Cunning", "Villainy", "Heroism"], aspects, setAspects)}
+      {createFilterGroup("Sets", ["SOR", "SHD", "TWI"], sets, setSets)}
+
+      <Styles.Button variant="contained" color="success" onClick={() => onFilter({aspects, sets})}>
+        Filter
+      </Styles.Button>
     </Styles.Filters>
   );
 }
