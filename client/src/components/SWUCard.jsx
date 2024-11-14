@@ -3,15 +3,23 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { CardMedia } from '@mui/material';
+import styled from 'styled-components';
+
+const StyledCard = styled(Card)`
+  margin: 10px;
+  width: 450px;
+`;
+
+const StyledCardMedia = styled(CardMedia)`
+  height: 140px;
+  width: 100%;
+`;
 
 export function SWUCard({data}) {
-  console.log(data);
-
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      {}
-      <CardMedia
-        sx={{ height: 140 }}
+    <StyledCard>
+      {data.type}
+      <StyledCardMedia
         image={data.frontArt}
         title={data.name}
       />
@@ -23,6 +31,6 @@ export function SWUCard({data}) {
             {data.frontText}
         </Typography>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 }
