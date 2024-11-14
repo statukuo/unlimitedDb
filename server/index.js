@@ -1,7 +1,7 @@
 require('dotenv').config(); // Secures variables
 const app = require('./utils/app'); // Backend App (server)
 const mongo = require('./utils/mongo'); // MongoDB (database)
-const { PORT } = require('./constants');
+const { SERVER_PORT } = require('./constants');
 const authRoutes = require('./routes/auth');
 const cardRoutes = require('./routes/cards');
 
@@ -13,8 +13,8 @@ async function bootstrap() {
   app.use('/auth', authRoutes);
   app.use('/cards', cardRoutes);
 
-  app.listen(PORT, () => {
-    console.log(`✅ Server is listening on port: ${PORT}`);
+  app.listen(SERVER_PORT, () => {
+    console.log(`✅ Server is listening on port: ${SERVER_PORT}`);
   });
 }
 
