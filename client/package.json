@@ -19,6 +19,7 @@
     "axios": "*",
     "react": "*",
     "react-dom": "*",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "*",
     "styled-components": "^6.1.13"
