@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
 import { getAllCards } from '../api/cards';
 import { SWUCard } from '../components/SWUCard';
 import styled from 'styled-components';
 import { CardFilter } from '../components/CardFilter';
 import { SidePanel } from '../components/SidePanel';
 import { Grid2 as Grid } from '@mui/material';
+import { BasePage } from './BasePage';
 
 const Styles = {
-  LandingPage: styled.div`
-    width: 100vw;
-    min-height: 100vh;
-    align-items: center;
-  `,
   CardContainer: styled(Grid)`
     max-width: 1200px;
   `
 };
 
 export function LandingPage() {
-  const { isLoggedIn } = useAuth();
   const [cardList, setCardList] = useState([]);
   const [ filters, setFilters] = useState({});
 
@@ -36,11 +29,7 @@ export function LandingPage() {
   };
 
   return (
-    <Styles.LandingPage className='LandingPage'>
-      <Header />
-
-      {isLoggedIn ? <LoggedInText /> : <LoggedOutText />}
-
+    <BasePage>
       <SidePanel>
         <CardFilter onFilter={updateFilters}/>
       </SidePanel>
@@ -52,16 +41,6 @@ export function LandingPage() {
                   </Grid>);
           })}
       </Styles.CardContainer>
-    </Styles.LandingPage>
+    </BasePage>
   );
 }
-
-const LoggedInText = () => {
-  const { account } = useAuth();
-
-  return <p>Hey, {account.username}! I'm happy to let you know: you are authenticated!</p>;
-};
-
-const LoggedOutText = () => (
-  <p>Don't forget to start your backend server, then authenticate yourself.</p>
-);

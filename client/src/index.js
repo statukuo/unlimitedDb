@@ -10,12 +10,20 @@ import { PrivateRoute } from './utils/privateRoute';
 
 import { LandingPage } from './pages/LandingPage';
 import { AdminBatchUpdate } from './pages/AdminBatchUpdate';
-
+import { LoginPage } from './pages/LoginPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <LoginPage registerMode />,
   },
   {
     element: <PrivateRoute />,

@@ -8,7 +8,7 @@ async function login(request, response) {
     // Validate request data
     await joi
       .object({
-        username: joi.string().required(),
+        email: joi.string().required(),
         password: joi.string().required(),
       })
       .validateAsync(request.body);

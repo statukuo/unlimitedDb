@@ -1,4 +1,4 @@
-import { Fragment, useState, React } from 'react';
+import { Fragment, useState, React } from "react";
 import {
   AppBar,
   IconButton,
@@ -7,10 +7,26 @@ import {
   List,
   ListSubheader,
   ListItemButton,
-} from '@mui/material';
-import OnlineIndicator from './OnlineIndicator';
-import AuthModal from './AuthModal';
-import { useAuth } from '../contexts/AuthContext';
+} from "@mui/material";
+import OnlineIndicator from "./OnlineIndicator";
+import AuthModal from "./AuthModal";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+const Styles = {
+  Header: styled(AppBar)`
+    width: 100% !important;
+    padding: 0 1rem !important;
+    background-color: whitesmoke !important;
+    color: black !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  `,
+};
 
 export default function Header() {
   const { isLoggedIn, account, logout } = useAuth();
@@ -19,6 +35,8 @@ export default function Header() {
   const [popover, setPopover] = useState(false);
   const [authModal, setAuthModal] = useState(false);
   const [register, setRegister] = useState(false);
+
+  const navigate = useNavigate();
 
   const openPopover = (e) => {
     setPopover(true);
@@ -31,24 +49,20 @@ export default function Header() {
   };
 
   const clickLogin = () => {
-    setRegister(false);
-    setAuthModal(true);
-    closePopover();
+    navigate("/login");
   };
 
   const clickRegister = () => {
-    setRegister(true);
-    setAuthModal(true);
-    closePopover();
+    navigate("/register");
   };
 
   return (
-    <AppBar className='header' position='static'>
+    <Styles.Header className="header" position="static">
       <h1>Web App</h1>
 
       <IconButton onClick={openPopover}>
         <OnlineIndicator online={isLoggedIn}>
-          <Avatar src={account?.username || ''} alt={account?.username || ''} />
+          <Avatar src={account?.username || ""} alt={account?.username || ""} />
         </OnlineIndicator>
       </IconButton>
 
@@ -56,11 +70,12 @@ export default function Header() {
         anchorEl={anchorEl}
         open={popover}
         onClose={closePopover}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <List style={{ minWidth: '100px' }}>
-          <ListSubheader style={{ textAlign: 'center' }}>
-            Hello, {isLoggedIn ? account.username : 'Guest'}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <List style={{ minWidth: "100px" }}>
+          <ListSubheader style={{ textAlign: "center" }}>
+            Hello, {isLoggedIn ? account.username : "Guest"}
           </ListSubheader>
 
           {isLoggedIn ? (
@@ -80,6 +95,6 @@ export default function Header() {
         isRegisterMode={register}
         toggleRegister={() => setRegister((prev) => !prev)}
       />
-    </AppBar>
+    </Styles.Header>
   );
 }
