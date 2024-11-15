@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const collectionCard = new mongoose.Schema({
+  set: { type: String, required: true },
+  number: { type: Number, required: true },
+  count: { type: Number, required: true, default: 0 },
+  isFoil: { type: Boolean, default: false }
+});
+
 const instance = new mongoose.Schema(
   {
     /*
@@ -29,6 +36,9 @@ const instance = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    cardCollection: {
+      type: [collectionCard]
+    }
   },
   {
     timestamps: true,

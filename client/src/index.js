@@ -12,6 +12,7 @@ import { LandingPage } from './pages/LandingPage';
 import { AdminBatchUpdate } from './pages/AdminBatchUpdate';
 import { LoginPage } from './pages/LoginPage';
 import { UserPage } from './pages/UserPage';
+import { CollectionProvider } from './contexts/CollectionContext';
 
 const router = createBrowserRouter([
   {
@@ -45,8 +46,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <StyledEngineProvider injectFirst>
     <React.StrictMode>
       <AuthProvider>
-        <CssBaseline />
-        <RouterProvider router={router} />
+        <CollectionProvider>
+          <CssBaseline />
+          <RouterProvider router={router} />
+        </CollectionProvider>
       </AuthProvider>
     </React.StrictMode>
   </StyledEngineProvider>

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { getAllCards } from '../api/cards';
-import { SWUCard } from '../components/SWUCard';
-import styled from 'styled-components';
-import { CardFilter } from '../components/CardFilter';
-import { SidePanel } from '../components/SidePanel';
-import { Grid2 as Grid } from '@mui/material';
-import { BasePage } from './BasePage';
+import React, { useEffect, useState } from "react";
+import { getAllCards } from "../api/cards";
+import { SWUCard } from "../components/SWUCard";
+import styled from "styled-components";
+import { CardFilter } from "../components/CardFilter";
+import { SidePanel } from "../components/SidePanel";
+import { Grid2 as Grid } from "@mui/material";
+import { BasePage } from "./BasePage";
 
 const Styles = {
   CardContainer: styled(Grid)`
-    max-width: 1200px;
-  `
+    max-width: 1800px;
+  `,
 };
 
 export function LandingPage() {
   const [cardList, setCardList] = useState([]);
-  const [ filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({});
 
   useEffect(() => {
     async function fetchData() {
@@ -31,15 +31,20 @@ export function LandingPage() {
   return (
     <BasePage>
       <SidePanel>
-        <CardFilter onFilter={updateFilters}/>
+        <CardFilter onFilter={updateFilters} />
       </SidePanel>
 
       <Styles.CardContainer container spacing={0.5} columns={12}>
-        {cardList.map((card, idx)=> {
-          return (<Grid item size={{ xs: 12, md: 6, lg: 4 }} key={idx}>
-                    <SWUCard key={idx} data={card}/>
-                  </Grid>);
-          })}
+        {cardList.map((card, idx) => {
+          return (
+            <Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
+              <SWUCard
+                key={idx}
+                data={card}
+              />
+            </Grid>
+          );
+        })}
       </Styles.CardContainer>
     </BasePage>
   );

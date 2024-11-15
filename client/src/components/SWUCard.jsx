@@ -1,32 +1,68 @@
-import * as React from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardMedia } from "@mui/material";
 import styled from "styled-components";
+import { Button } from "@mui/material";
+import { useAuth } from "../contexts/AuthContext";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useCollection } from "../contexts/CollectionContext";
 
 const Styles = {
   Card: styled(Card)`
     margin: 10px;
   `,
-  CardMedia: styled(CardMedia)`
-    height: 140px;
+  CardImage: styled.img`
     width: 100%;
+    display: block;
   `,
+  CollectionCounter: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `
 };
 
 export function SWUCard({ data }) {
+  const {isLoggedIn} = useAuth();
+  const {userCollection, updateCollection} = useCollection();
+
+  const updateCount = (count) => {
+    updateCollection({set: data.set, number: data.number, count});
+  };
+
+  const collectionCounter = () => {
+    if (!isLoggedIn) {
+      return;
+    }
+
+    const currentCount = userCollection?.[data.set]?.[data.number] || 0;
+
+    return <Styles.CollectionCounter>
+      <Button onClick={() => updateCount(Math.max(currentCount -1, 0))}>
+        <RemoveIcon />
+      </Button>
+      <Typography>{currentCount}</Typography>
+      <Button onClick={() => updateCount(currentCount + 1)}>
+        <AddIcon />
+      </Button>
+    </Styles.CollectionCounter>;
+  };
+
   return (
     <Styles.Card>
-      {data.type}
-      <Styles.CardMedia image={data.frontArt} title={data.name} />
+      <Styles.CardImage src={data.backArt || data.frontArt} alt={data.name} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {data.name} - {data.subtitle}
+          {data.name}
         </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {data.frontText}
+        <Typography gutterBottom variant="h6" component="div">
+          {data.subtitle}
         </Typography>
+
+        { collectionCounter() }
+
       </CardContent>
     </Styles.Card>
   );

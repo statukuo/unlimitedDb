@@ -6,7 +6,7 @@ async function loginWithToken(request, response) {
     const { uid } = request.auth;
 
     // Get account from DB, existance not verified because we are already authorized at this point
-    const foundAccount = await Account.findOne({ _id: uid }).select('-password');
+    const foundAccount = await Account.findOne({ _id: uid }, { cardCollection: 0 }).select('-password');
 
     // Generate access token
     const token = signToken({ uid: foundAccount._id, role: foundAccount.role });

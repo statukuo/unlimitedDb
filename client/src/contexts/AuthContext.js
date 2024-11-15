@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from '../utils/axios';
+import React, { useMemo } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "../utils/axios";
 
 // init context
 const AuthContext = createContext();
@@ -14,18 +14,13 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(undefined);
   const [account, setAccount] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
   const register = (formData = {}) =>
     new Promise((resolve, reject) => {
       axios
-        .post('/auth/register', formData)
-        .then(({
-          data: {
-            data: accountData,
-            token: accessToken,
-          },
-        }) => {
+        .post("/auth/register", formData)
+        .then(({ data: { data: accountData, token: accessToken } }) => {
           setAccount(accountData);
           setToken(accessToken);
           setIsLoggedIn(true);
@@ -37,16 +32,22 @@ export function AuthProvider({ children }) {
         });
     });
 
-  const login = (formData = {}) =>
-    new Promise((resolve, reject) => {
+  const login = (formData = {}) => {
+    if (isLoggedIn) {
+      return {
+        isLoggedIn,
+        account,
+        token,
+        register,
+        login,
+        logout,
+      };
+    }
+
+    return new Promise((resolve, reject) => {
       axios
-        .post('/auth/login', formData)
-        .then(({
-          data: {
-            data: accountData,
-            token: accessToken,
-          },
-        }) => {
+        .post("/auth/login", formData)
+        .then(({ data: { data: accountData, token: accessToken } }) => {
           setAccount(accountData);
           setToken(accessToken);
           setIsLoggedIn(true);
@@ -57,6 +58,7 @@ export function AuthProvider({ children }) {
           reject(error?.response?.data?.message || error.message);
         });
     });
+  };
 
   const logout = () => {
     setIsLoggedIn(false);
@@ -67,11 +69,8 @@ export function AuthProvider({ children }) {
   const loginWithToken = async () => {
     try {
       const {
-        data: {
-          data: accountData,
-          token: accessToken,
-        },
-      } = await axios.get('/auth/login', {
+        data: { data: accountData, token: accessToken },
+      } = await axios.get("/auth/login", {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -90,9 +89,11 @@ export function AuthProvider({ children }) {
   // making sure it can be re-used upon refresh or re-open browser
   useEffect(() => {
     if (token) {
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
     }
   }, [token]);
 
@@ -102,8 +103,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!isLoggedIn && !account && token) loginWithToken();
   }, [isLoggedIn, account, token]);
-
-
 
   const value = useMemo(
     () => ({
@@ -117,10 +116,5 @@ export function AuthProvider({ children }) {
     [isLoggedIn]
   );
 
-  return (
-    <AuthContext.Provider
-      value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
