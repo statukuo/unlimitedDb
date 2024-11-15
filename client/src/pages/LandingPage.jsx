@@ -9,7 +9,7 @@ import { BasePage } from './BasePage';
 
 const Styles = {
   CardContainer: styled(Grid)`
-    max-width: 1200px;
+    max-width: 1800px;
   `
 };
 
@@ -36,7 +36,7 @@ export function LandingPage() {
 
       <Styles.CardContainer container spacing={0.5} columns={12}>
         {cardList.map((card, idx)=> {
-          return (<Grid item size={{ xs: 12, md: 6, lg: 4 }} key={idx}>
+          return (<Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
                     <SWUCard key={idx} data={card}/>
                   </Grid>);
           })}
