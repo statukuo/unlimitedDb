@@ -17,19 +17,24 @@ export function CollectionProvider({ children }) {
   const { isLoggedIn } = useAuth();
 
   const fetchCollection = async () => {
-    if (!isLoggedIn) {
-      return;
-    }
-
+    console.log("TESTETS");
     setUserCollection(await getUserCollection());
   };
 
   useEffect(() => {
-    if (isLoggedIn) fetchCollection();
+    if (!isLoggedIn) {
+      return;
+    };
+
+    fetchCollection();
   }, [isLoggedIn]);
 
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return;
+    };
+
     const interval = setTimeout(() => {
       updateUserCollection(userCollection);
     }, (5000));

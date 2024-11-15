@@ -48,6 +48,8 @@ export function AuthProvider({ children }) {
       axios
         .post("/auth/login", formData)
         .then(({ data: { data: accountData, token: accessToken } }) => {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
           setAccount(accountData);
           setToken(accessToken);
           setIsLoggedIn(true);
@@ -75,6 +77,8 @@ export function AuthProvider({ children }) {
           authorization: `Bearer ${token}`,
         },
       });
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setAccount(accountData);
       setToken(accessToken);
