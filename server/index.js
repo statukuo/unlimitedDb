@@ -4,6 +4,7 @@ const mongo = require('./utils/mongo'); // MongoDB (database)
 const { SERVER_PORT } = require('./constants');
 const authRoutes = require('./routes/auth');
 const cardRoutes = require('./routes/cards');
+const collectionRoutes = require('./routes/collection');
 
 async function bootstrap() {
   await mongo.connect();
@@ -12,6 +13,7 @@ async function bootstrap() {
   app.get('/healthz', (req, res) => res.status(200).send());
   app.use('/auth', authRoutes);
   app.use('/cards', cardRoutes);
+  app.use('/collection', collectionRoutes);
 
   app.listen(SERVER_PORT, () => {
     console.log(`✅ Server is listening on port: ${SERVER_PORT}`);
