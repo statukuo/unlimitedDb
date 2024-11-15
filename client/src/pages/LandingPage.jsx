@@ -6,8 +6,6 @@ import { CardFilter } from "../components/CardFilter";
 import { SidePanel } from "../components/SidePanel";
 import { Grid2 as Grid } from "@mui/material";
 import { BasePage } from "./BasePage";
-import { useAuth } from "../contexts/AuthContext";
-import { getUserCollection } from "../api/collection";
 
 const Styles = {
   CardContainer: styled(Grid)`
@@ -17,9 +15,7 @@ const Styles = {
 
 export function LandingPage() {
   const [cardList, setCardList] = useState([]);
-  const [userCollection, setUserCollection] = useState([]);
   const [filters, setFilters] = useState({});
-  const { account } = useAuth();
 
   useEffect(() => {
     async function fetchData() {
@@ -27,17 +23,6 @@ export function LandingPage() {
     }
     fetchData();
   }, [filters]);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (account) {
-        setUserCollection(await getUserCollection());
-
-        console.log(userCollection);
-      }
-    }
-    fetchData();
-  }, [account]);
 
   const updateFilters = (filters) => {
     setFilters(filters);
@@ -53,7 +38,10 @@ export function LandingPage() {
         {cardList.map((card, idx) => {
           return (
             <Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
-              <SWUCard key={idx} data={card} />
+              <SWUCard
+                key={idx}
+                data={card}
+              />
             </Grid>
           );
         })}
