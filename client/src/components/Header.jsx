@@ -11,7 +11,7 @@ import {
 import OnlineIndicator from "./OnlineIndicator";
 import AuthModal from "./AuthModal";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Styles = {
@@ -58,7 +58,9 @@ export default function Header() {
 
   return (
     <Styles.Header className="header" position="static">
-      <h1>Web App</h1>
+      <Link to={"/"}>
+        <h1>UnlimitedDB</h1>
+      </Link>
 
       <IconButton onClick={openPopover}>
         <OnlineIndicator online={isLoggedIn}>

@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { BasePage } from "./BasePage";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Styles= {
   LoginContainer: styled(Stack)`
@@ -16,6 +17,7 @@ const textFieldSx = { mx: 2, my: 0.5 };
 
 export function LoginPage({ registerMode }) {
   const { login, register } = useAuth();
+  const navigate = useNavigate();
 
   const [isRegisterMode, setRegisterMode] = useState(registerMode);
   const [formData, setFormData] = useState({});
@@ -37,7 +39,7 @@ export function LoginPage({ registerMode }) {
 
     try {
       isRegisterMode ? await register(formData) : await login(formData);
-      close();
+      navigate("/user");
     } catch (error) {
       setError(error);
     }
