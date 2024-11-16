@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { getAllCards } from "../api/cards";
+import React, { useState } from "react";
 import { SWUCard } from "../components/SWUCard";
 import styled from "styled-components";
 import { CardFilter } from "../components/CardFilter";
@@ -7,6 +6,7 @@ import { SidePanel } from "../components/SidePanel";
 import { Grid2 as Grid } from "@mui/material";
 import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useCardList } from "../contexts/CardContex";
 
 const PAGINATION = 20;
 
@@ -17,25 +17,13 @@ const Styles = {
 };
 
 export function LandingPage() {
-  const [cardList, setCardList] = useState([]);
-  const [filters, setFilters] = useState({});
+  const { cardList, filteredList } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
-
-  useEffect(() => {
-    async function fetchData() {
-      setCardList(await getAllCards(filters));
-    }
-    fetchData();
-  }, [filters]);
-
-  const updateFilters = (filters) => {
-    setFilters(filters);
-  };
 
   return (
     <BasePage>
       <SidePanel>
-        <CardFilter onFilter={updateFilters} />
+        <CardFilter />
       </SidePanel>
 
       <InfiniteScroll
@@ -54,13 +42,15 @@ export function LandingPage() {
         }
       >
         <Styles.CardContainer container spacing={0.5} columns={12}>
-          {cardList.slice(0, currentShowing).map((card, idx) => {
-            return (
-              <Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
-                <SWUCard key={idx} data={card} />
-              </Grid>
-            );
-          })}
+          {(filteredList.length ? filteredList : cardList)
+            .slice(0, currentShowing)
+            .map((card, idx) => {
+              return (
+                <Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
+                  <SWUCard key={idx} data={card} />
+                </Grid>
+              );
+            })}
         </Styles.CardContainer>
       </InfiniteScroll>
     </BasePage>

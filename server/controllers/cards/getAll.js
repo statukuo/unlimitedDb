@@ -13,7 +13,7 @@ async function getAll(request, response) {
         }
     }
 
-    let results = await Card.find(sanitazedFilters);
+    let results = await Card.find(sanitazedFilters, null, { sort: { set: 1, number: 1 } });
     response.send(results).status(200);
 }
 

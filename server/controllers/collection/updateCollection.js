@@ -1,4 +1,5 @@
 const Account = require("../../models/Account");
+const formatCollection = require("./formatCollection");
 
 async function updateCollection(request, response) {
     const cardCollection = [];
@@ -10,8 +11,9 @@ async function updateCollection(request, response) {
     }
 
     await Account.findOneAndUpdate({ "_id": request.auth.uid }, { cardCollection });
+    const data = await Account.findOne({ "_id": request.auth.uid }, { cardCollection: 1 });
 
-    response.send({}).status(200);
+    response.status(200).json(formatCollection(data.cardCollection));
 }
 
 module.exports = updateCollection;

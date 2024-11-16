@@ -48,6 +48,10 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const clickCollection = () => {
+    navigate("/collection");
+  };
+
   const clickLogin = () => {
     navigate("/login");
   };
@@ -81,7 +85,12 @@ export default function Header() {
           </ListSubheader>
 
           {isLoggedIn ? (
-            <ListItemButton onClick={logout}>Logout</ListItemButton>
+            <Fragment>
+              <ListItemButton onClick={clickCollection}>
+                Collection
+              </ListItemButton>
+              <ListItemButton onClick={logout}>Logout</ListItemButton>
+            </Fragment>
           ) : (
             <Fragment>
               <ListItemButton onClick={clickLogin}>Login</ListItemButton>

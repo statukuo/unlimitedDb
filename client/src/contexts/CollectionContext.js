@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
-import { getUserCollection, updateUserCollection } from "../api/collection";
+import { getUserCollection, updateCollectionBatch, updateUserCollection } from "../api/collection";
 
 // init context
 const CollectionContext = createContext();
@@ -14,11 +14,16 @@ export function useCollection() {
 // export the provider (handle all the logic here)
 export function CollectionProvider({ children }) {
   const [userCollection, setUserCollection] = useState({});
+  const [owned, setOwned] = useState(0);
+  const [ownedUnique, setOwnedUnique] = useState(0);
+  const [needToUpdate, setNeedToUpdate] = useState(false);
   const { isLoggedIn } = useAuth();
 
   const fetchCollection = async () => {
-    console.log("TESTETS");
-    setUserCollection(await getUserCollection());
+    const collection = await getUserCollection();
+    setUserCollection(collection.userCollection);
+    setOwned(collection.owned);
+    setOwnedUnique(collection.ownedUnique);
   };
 
   useEffect(() => {
@@ -31,12 +36,17 @@ export function CollectionProvider({ children }) {
 
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !needToUpdate) {
       return;
     };
 
-    const interval = setTimeout(() => {
-      updateUserCollection(userCollection);
+    const interval = setTimeout(async () => {
+      setNeedToUpdate(false);
+
+      const collection = await updateUserCollection(userCollection);
+      setUserCollection(collection.userCollection);
+      setOwned(collection.owned);
+      setOwnedUnique(collection.ownedUnique);
     }, (5000));
 
     return () => {
@@ -45,6 +55,7 @@ export function CollectionProvider({ children }) {
   }, [userCollection]);
 
   const updateCollection = ({ set, number, count }) => {
+    setNeedToUpdate(true);
     const tempUserCollection = { ...userCollection };
 
     if (!tempUserCollection[set]) {
@@ -60,9 +71,21 @@ export function CollectionProvider({ children }) {
     setUserCollection(tempUserCollection);
   };
 
+  const batchUpdateCollection = async (batchCollectionData) => {
+    setNeedToUpdate(false);
+
+    const collection = await updateCollectionBatch(batchCollectionData);
+    setUserCollection(collection.userCollection);
+    setOwned(collection.owned);
+    setOwnedUnique(collection.ownedUnique);
+  };
+
   const value = {
     userCollection,
-    updateCollection
+    updateCollection,
+    batchUpdateCollection,
+    owned,
+    ownedUnique
   };
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>;
