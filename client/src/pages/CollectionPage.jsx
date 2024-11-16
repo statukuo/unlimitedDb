@@ -4,12 +4,14 @@ import { BasePage } from "./BasePage";
 import styled from "styled-components";
 import { useCollection } from "../contexts/CollectionContext";
 import { useCardList } from "../contexts/CardContex";
+import { BatchUploader } from "../components/BatchUploader";
 
 const Styles = {
   CollectionContainer: styled(Stack)`
     height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)";
     min-height: "100%";
     padding: 10px;
+    flex-basis: 100%;
   `,
 };
 
@@ -24,6 +26,7 @@ export function CollectionPage() {
         <Typography varian="h3">
           You have {ownedUnique} cards from {cardCount}
         </Typography>
+        <BatchUploader />
       </Styles.CollectionContainer>
     </BasePage>
   );
