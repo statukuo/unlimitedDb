@@ -11,7 +11,11 @@ async function getCollection(request, response) {
         return acc;
     }, {});
 
-    response.send(objectStructure).status(200);
+    response.send({
+        userCollection: objectStructure,
+        owned: userCollection.cardCollection.reduce((acc, current) => acc + current.count, 0),
+        ownedUnique: userCollection.cardCollection.length
+    }).status(200);
 }
 
 module.exports = getCollection;

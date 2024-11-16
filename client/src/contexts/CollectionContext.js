@@ -14,10 +14,15 @@ export function useCollection() {
 // export the provider (handle all the logic here)
 export function CollectionProvider({ children }) {
   const [userCollection, setUserCollection] = useState({});
+  const [owned, setOwned] = useState(0);
+  const [ownedUnique, setOwnedUnique] = useState(0);
   const { isLoggedIn } = useAuth();
 
   const fetchCollection = async () => {
-    setUserCollection(await getUserCollection());
+    const collection = await getUserCollection();
+    setUserCollection(collection.userCollection);
+    setOwned(collection.owned);
+    setOwnedUnique(collection.ownedUnique);
   };
 
   useEffect(() => {
@@ -61,7 +66,9 @@ export function CollectionProvider({ children }) {
 
   const value = {
     userCollection,
-    updateCollection
+    updateCollection,
+    owned,
+    ownedUnique
   };
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>;

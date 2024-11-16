@@ -14,15 +14,15 @@ const Styles = {
 };
 
 export function CollectionPage() {
-  const { userCollection } = useCollection();
+  const { ownedUnique, owned } = useCollection();
   const { cardCount } = useCardList();
 
   return (
     <BasePage>
       <Styles.CollectionContainer direction="column">
-        <Typography varian="h2">Analytics</Typography>
+        <Typography varian="h2">Analytics from {owned}</Typography>
         <Typography varian="h3">
-          You have {userCollection.owned} cards from {cardCount}
+          You have {ownedUnique} cards from {cardCount}
         </Typography>
       </Styles.CollectionContainer>
     </BasePage>
