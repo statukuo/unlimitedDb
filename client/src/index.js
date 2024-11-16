@@ -14,11 +14,16 @@ import { UserPage } from './pages/UserPage';
 import { CollectionProvider } from './contexts/CollectionContext';
 import { CollectionPage } from './pages/CollectionPage';
 import { CardListProvider } from './contexts/CardContex';
+import { CardListPage } from './pages/CardListPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
+  },
+  {
+    path: "/cards",
+    element: <CardListPage />,
   },
   {
     path: "/login",

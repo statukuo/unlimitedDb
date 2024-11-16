@@ -9,6 +9,7 @@ async function updateCollection(request, response) {
         const entryData = entry.split("\t");
 
         return {
+            id: `${entryData[0]}_${entryData[1].padStart(3, "0")}`,
             set: entryData[0],
             number: parseInt(entryData[1]),
             count: parseInt(entryData[2])
