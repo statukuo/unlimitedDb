@@ -18,12 +18,12 @@ const instance = new mongoose.Schema({
   base: { type: Card },
   list: { type: [Card] },
   sideboard: { type: [Card] },
-  viewCount: { type: Number },
-  likeCount: { type: Number },
-  private: { type: Boolean, defaults: true },
+  viewCount: { type: Number, default: 0 },
+  likeCount: { type: Number, deafault: 0 },
+  private: { type: Boolean, default: true },
   ownerId: { type: String },
-  version: { ype: Number },
-  comments: { type: [Comment] }
+  version: { type: Number, default: 1 },
+  comments: { type: [Comment], default: [] }
 },
   {
     timestamps: true,

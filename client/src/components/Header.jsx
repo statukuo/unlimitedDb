@@ -11,7 +11,7 @@ import {
 import OnlineIndicator from "./OnlineIndicator";
 import AuthModal from "./AuthModal";
 import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Styles = {
@@ -62,9 +62,7 @@ export default function Header() {
 
   return (
     <Styles.Header className="header" position="static">
-      <Link to={"/"}>
-        <h1>UnlimitedDB</h1>
-      </Link>
+      <h1>UnlimitedDB</h1>
 
       <IconButton onClick={openPopover}>
         <OnlineIndicator online={isLoggedIn}>
@@ -83,6 +81,11 @@ export default function Header() {
           <ListSubheader style={{ textAlign: "center" }}>
             Hello, {isLoggedIn ? account.username : "Guest"}
           </ListSubheader>
+          <ListItemButton onClick={() => navigate("/")}>Home</ListItemButton>
+
+          <ListItemButton onClick={() => navigate("/cards")}>
+            Cards
+          </ListItemButton>
 
           {isLoggedIn ? (
             <Fragment>

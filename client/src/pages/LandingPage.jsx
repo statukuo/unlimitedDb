@@ -1,62 +1,76 @@
-import React, { useState } from "react";
-import { SWUCard } from "../components/SWUCard";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { CardFilter } from "../components/CardFilter";
-import { SidePanel } from "../components/SidePanel";
-import { Grid2 as Grid } from "@mui/material";
+import { Card, Grid2 as Grid, Typography } from "@mui/material";
 import { BasePage } from "./BasePage";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useCardList } from "../contexts/CardContex";
-
-const PAGINATION = 36;
+import { useAuth } from "../contexts/AuthContext";
+import { getUserDecks } from "../api/decks";
+import { DeckUploader } from "../components/DeckUploader";
 
 const Styles = {
   CardContainer: styled(Grid)`
     max-width: 1800px;
   `,
+  Card: styled(Card)`
+    margin: 10px;
+  `,
+  CardImage: styled.img`
+    width: 100%;
+    display: block;
+  `,
 };
 
 export function LandingPage() {
-  const { cardList, filteredList } = useCardList();
-  const [currentShowing, setCurrentShowing] = useState(PAGINATION);
+  const { isLoggedIn } = useAuth();
+  const { getCard } = useCardList();
+
+  const [userDeckList, setUserDeckList] = useState([]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      return;
+    }
+
+    const fetchUserDeckList = async () => {
+      setUserDeckList(await getUserDecks());
+    };
+
+    fetchUserDeckList();
+  }, [isLoggedIn]);
+
+  const createDeckList = (deckList) => {
+    console.log(deckList);
+    const leaderCardData = getCard(deckList.leader.id);
+    const baseCardData = getCard(deckList.base.id);
+
+    return (
+      <Styles.Card key={deckList.title}>
+        <Typography variant="h5">{deckList.title}</Typography>
+        <Grid container>
+          <Grid size={6}>
+            <Styles.CardImage
+              src={leaderCardData?.frontArt}
+              alt={leaderCardData?.name}
+            />
+          </Grid>
+          <Grid size={6}>
+            <Styles.CardImage
+              src={baseCardData?.frontArt}
+              alt={baseCardData?.name}
+            />
+          </Grid>
+        </Grid>
+      </Styles.Card>
+    );
+  };
 
   return (
     <BasePage>
-      <SidePanel>
-        <CardFilter />
-      </SidePanel>
+      <Styles.CardContainer container spacing={0.5} columns={2}>
+        {userDeckList.map(createDeckList)}
+      </Styles.CardContainer>
 
-      <InfiniteScroll
-        dataLength={currentShowing} //This is important field to render the next data
-        next={() =>
-          setCurrentShowing(
-            Math.min(currentShowing + PAGINATION, cardList.length)
-          )
-        }
-        hasMore={currentShowing < cardList.length}
-        loader={<h4>Loading...</h4>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
-          </p>
-        }
-      >
-        <Styles.CardContainer container spacing={0.5} columns={12}>
-          {(filteredList.length ? filteredList : cardList)
-            .slice(0, currentShowing)
-            .map((card, idx) => {
-              return (
-                <Grid
-                  item
-                  size={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }}
-                  key={idx}
-                >
-                  <SWUCard key={idx} data={card} />
-                </Grid>
-              );
-            })}
-        </Styles.CardContainer>
-      </InfiniteScroll>
+      {isLoggedIn ? <DeckUploader /> : null}
     </BasePage>
   );
 }

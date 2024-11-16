@@ -7,7 +7,6 @@ const Styles = {
   BasePage: styled(Box)`
     display: flex;
     justify-content: center;
-    min-height: 100vh;
   `,
 };
 
