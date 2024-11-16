@@ -8,7 +8,7 @@ import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useCardList } from "../contexts/CardContex";
 
-const PAGINATION = 20;
+const PAGINATION = 36;
 
 const Styles = {
   CardContainer: styled(Grid)`
@@ -46,7 +46,11 @@ export function LandingPage() {
             .slice(0, currentShowing)
             .map((card, idx) => {
               return (
-                <Grid item size={{ xs: 12, md: 6, lg: 4, xl: 2 }} key={idx}>
+                <Grid
+                  item
+                  size={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }}
+                  key={idx}
+                >
                   <SWUCard key={idx} data={card} />
                 </Grid>
               );

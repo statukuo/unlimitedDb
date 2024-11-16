@@ -6,7 +6,7 @@ async function updateCollection(request, response) {
 
     for (const [set] of Object.entries(request.body)) {
         for (const [number, count] of Object.entries(request.body[set])) {
-            cardCollection.push({ set, number: parseInt(number), count });
+            cardCollection.push({ id: `${set}_${number.padStart(3, "0")}`, set, number: parseInt(number), count });
         }
     }
 

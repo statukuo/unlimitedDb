@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const collectionCard = new mongoose.Schema({
+  id: { type: String, required: true },
   set: { type: String, required: true },
   number: { type: Number, required: true },
   count: { type: Number, required: true, default: 0 },
