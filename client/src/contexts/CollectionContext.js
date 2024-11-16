@@ -17,7 +17,6 @@ export function CollectionProvider({ children }) {
   const { isLoggedIn } = useAuth();
 
   const fetchCollection = async () => {
-    console.log("TESTETS");
     setUserCollection(await getUserCollection());
   };
 

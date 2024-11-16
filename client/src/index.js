@@ -9,10 +9,11 @@ import './styles/index.css';
 import { PrivateRoute } from './utils/privateRoute';
 
 import { LandingPage } from './pages/LandingPage';
-import { AdminBatchUpdate } from './pages/AdminBatchUpdate';
 import { LoginPage } from './pages/LoginPage';
 import { UserPage } from './pages/UserPage';
 import { CollectionProvider } from './contexts/CollectionContext';
+import { CollectionPage } from './pages/CollectionPage';
+import { CardListProvider } from './contexts/CardContex';
 
 const router = createBrowserRouter([
   {
@@ -31,12 +32,12 @@ const router = createBrowserRouter([
     element: <PrivateRoute />,
     children: [
       {
-        path: '/batchUpdate',
-        element: <AdminBatchUpdate />
-      },
-      {
         path: '/user',
         element: <UserPage />
+      },
+      {
+        path: '/collection',
+        element: <CollectionPage />
       }
     ]
   },
@@ -47,8 +48,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
       <AuthProvider>
         <CollectionProvider>
-          <CssBaseline />
-          <RouterProvider router={router} />
+          <CardListProvider>
+            <CssBaseline />
+            <RouterProvider router={router} />
+          </CardListProvider>
         </CollectionProvider>
       </AuthProvider>
     </React.StrictMode>
