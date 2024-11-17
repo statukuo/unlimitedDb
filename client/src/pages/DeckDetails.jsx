@@ -15,7 +15,8 @@ import { useCardList } from "../contexts/CardContex";
 const Styles = {
   CardList: styled(Stack)`
     height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)";
-    min-height: "100%";
+    min-height: 100%;
+    width: 100%;
     padding: 10px;
   `,
   Card: styled.img`
