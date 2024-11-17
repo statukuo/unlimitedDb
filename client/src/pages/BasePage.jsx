@@ -7,6 +7,8 @@ const Styles = {
   BasePage: styled(Box)`
     display: flex;
     justify-content: center;
+    max-width: 1800px;
+    place-self: center;
   `,
 };
 

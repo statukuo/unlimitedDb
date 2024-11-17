@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Card, Grid2 as Grid, Typography } from "@mui/material";
+import { Button, Card, Grid2 as Grid, Typography } from "@mui/material";
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContex";
 import { useAuth } from "../contexts/AuthContext";
 import { getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
+import { useNavigate } from "react-router-dom";
 
 const Styles = {
   CardContainer: styled(Grid)`
@@ -22,7 +23,8 @@ const Styles = {
 
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
-  const { getCard } = useCardList();
+  const { getCardData } = useCardList();
+  const navigate = useNavigate();
 
   const [userDeckList, setUserDeckList] = useState([]);
 
@@ -39,9 +41,8 @@ export function LandingPage() {
   }, [isLoggedIn]);
 
   const createDeckList = (deckList) => {
-    console.log(deckList);
-    const leaderCardData = getCard(deckList.leader.id);
-    const baseCardData = getCard(deckList.base.id);
+    const leaderCardData = getCardData(deckList.leader.id);
+    const baseCardData = getCardData(deckList.base.id);
 
     return (
       <Styles.Card key={deckList.title}>
@@ -60,6 +61,7 @@ export function LandingPage() {
             />
           </Grid>
         </Grid>
+        <Button onClick={() => navigate("/deck/" + deckList._id)}>View</Button>
       </Styles.Card>
     );
   };

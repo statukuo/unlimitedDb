@@ -19,7 +19,6 @@ export function DeckUploader() {
   const [deckListJSON, setDeckListJSON] = useState("");
 
   const uploadDeckJSON = () => {
-    console.log("TEST");
     uploadDeck(deckListJSON);
   };
 
