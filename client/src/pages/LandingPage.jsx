@@ -30,6 +30,7 @@ export function LandingPage() {
 
   useEffect(() => {
     if (!isLoggedIn) {
+      setUserDeckList([]);
       return;
     }
 
@@ -66,13 +67,34 @@ export function LandingPage() {
     );
   };
 
+  const notLoggedInMessage = () => {
+    return (
+      <div>
+        <Typography>
+          You are not logged in, if you want to upload a deck, please log in:
+        </Typography>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </Button>
+        <Typography>Or you can always check out the cards database</Typography>
+        <Button variant="contained" onClick={() => navigate("/cards")}>
+          Go to cards
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <BasePage>
       <Styles.CardContainer container spacing={0.5} columns={2}>
         {userDeckList.map(createDeckList)}
       </Styles.CardContainer>
 
-      {isLoggedIn ? <DeckUploader /> : null}
+      {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
     </BasePage>
   );
 }
