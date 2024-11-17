@@ -15,6 +15,7 @@ import { CollectionProvider } from './contexts/CollectionContext';
 import { CollectionPage } from './pages/CollectionPage';
 import { CardListProvider } from './contexts/CardContex';
 import { CardListPage } from './pages/CardListPage';
+import { DeckDetails } from './pages/DeckDetails';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <LoginPage registerMode />,
+  },
+  {
+    path: "/deck/:deckId",
+    element: <DeckDetails />,
   },
   {
     element: <PrivateRoute />,

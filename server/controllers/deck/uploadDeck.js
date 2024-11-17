@@ -1,8 +1,6 @@
 const Deck = require('../../models/Deck');
 
 async function uploadDeck(request, response) {
-    console.log(request.body);
-
     const deck = request.body.deck;
 
     const documentToUpload = {

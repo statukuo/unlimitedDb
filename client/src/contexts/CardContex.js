@@ -41,7 +41,7 @@ export function CardListProvider({ children }) {
     setFilter(null);
   };
 
-  const getCard = (id) => {
+  const getCardData = (id) => {
     const [searchSet, searchNumber] = id.split("_");
 
     return cardList.find(({ set, number }) => set === searchSet && number === parseInt(searchNumber));
@@ -55,7 +55,7 @@ export function CardListProvider({ children }) {
     filter,
     apllyFilters,
     clearFilter,
-    getCard
+    getCardData
   };
 
   return <CardlistContext.Provider value={value}>{children}</CardlistContext.Provider>;
