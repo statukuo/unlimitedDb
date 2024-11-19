@@ -17,13 +17,13 @@ const Styles = {
 };
 
 export function CardListPage() {
-  const { cardList, filteredList } = useCardList();
+  const { cardList, filteredList, filter } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
 
   return (
     <BasePage>
       <SidePanel>
-        <CardFilter />
+        <CardFilter activeFilters={filter} />
       </SidePanel>
 
       <InfiniteScroll
