@@ -3,7 +3,7 @@ import { Stack, Typography } from "@mui/material";
 import { BasePage } from "./BasePage";
 import styled from "styled-components";
 import { useCollection } from "../contexts/CollectionContext";
-import { useCardList } from "../contexts/CardContex";
+import { useCardList } from "../contexts/CardContext";
 import { BatchUploader } from "../components/BatchUploader";
 
 const Styles = {

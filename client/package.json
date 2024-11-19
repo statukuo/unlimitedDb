@@ -22,7 +22,8 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "*",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "use-debounce": "^10.0.4"
   },
   "browserslist": {
     "production": [

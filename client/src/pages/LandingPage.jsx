@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, Card, Grid2 as Grid, Typography } from "@mui/material";
 import { BasePage } from "./BasePage";
-import { useCardList } from "../contexts/CardContex";
+import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
 import { getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";

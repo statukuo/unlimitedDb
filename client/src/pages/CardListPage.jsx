@@ -6,7 +6,7 @@ import { SidePanel } from "../components/SidePanel";
 import { Grid2 as Grid } from "@mui/material";
 import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useCardList } from "../contexts/CardContex";
+import { useCardList } from "../contexts/CardContext";
 
 const PAGINATION = 36;
 

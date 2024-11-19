@@ -10,7 +10,7 @@ import { BasePage } from "./BasePage";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { getDeck } from "../api/decks";
-import { useCardList } from "../contexts/CardContex";
+import { useCardList } from "../contexts/CardContext";
 
 const Styles = {
   CardList: styled(Stack)`

@@ -13,7 +13,7 @@ import { LoginPage } from './pages/LoginPage';
 import { UserPage } from './pages/UserPage';
 import { CollectionProvider } from './contexts/CollectionContext';
 import { CollectionPage } from './pages/CollectionPage';
-import { CardListProvider } from './contexts/CardContex';
+import { CardListProvider } from './contexts/CardContext';
 import { CardListPage } from './pages/CardListPage';
 import { DeckDetails } from './pages/DeckDetails';
 
