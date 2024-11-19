@@ -3,10 +3,18 @@ const Card = require('../../models/Card');
 
 async function getFilters(request, response) {
     let results = {
+        name: {
+            title: "Name",
+            text: true
+        },
         aspects: {
             title: "Aspects",
             strict: true,
             options: await Card.collection.distinct('aspects')
+        },
+        type: {
+            title: "Type",
+            options: await Card.collection.distinct('type')
         },
         cost: {
             title: "Cost",

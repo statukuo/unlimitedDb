@@ -13,7 +13,9 @@ function getNumericStrictFilter(name) {
 }
 
 async function getAll(request, response) {
-    const sanitazedFilters = {};
+    const sanitazedFilters = {
+        $or: []
+    };
     const filters = request.query.filters;
 
     if (filters) {
@@ -54,10 +56,16 @@ async function getAll(request, response) {
             sanitazedFilters.rarity = filters.rarity;
         }
         if (filters.ability) {
-            sanitazedFilters.backText = { "$regex": filters.ability, "$options": "i" };
-            sanitazedFilters.frontText = { "$regex": filters.ability, "$options": "i" };
+            const textFilter = RegExp(filters.ability, "gi");
+            sanitazedFilters.$or.push(...[{ backText: { "$regex": textFilter } }, { frontText: { "$regex": textFilter } }]);
+        }
+        if (filters.name) {
+            const textFilter = RegExp(filters.name, "gi");
+            sanitazedFilters.$or.push(...[{ subtitle: { "$regex": textFilter } }, { name: { "$regex": textFilter } }]);
         }
     }
+
+    if (sanitazedFilters.$or.length === 0) { delete sanitazedFilters.$or; }
 
     let results = await Card.find(sanitazedFilters, null, { sort: { set: 1, number: 1 } });
     response.send(results).status(200);
