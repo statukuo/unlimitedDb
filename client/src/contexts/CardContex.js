@@ -14,7 +14,12 @@ export function useCardList() {
 export function CardListProvider({ children }) {
   const [cardList, setCardList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState({
+    aspectsStrict: "OR",
+    aspects: [],
+    sets: [],
+    cost: []
+  });
 
 
   useEffect(() => {
