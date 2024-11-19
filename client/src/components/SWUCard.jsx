@@ -55,16 +55,7 @@ export function SWUCard({ data }) {
   return (
     <Styles.Card>
       <Styles.CardImage src={data.backArt || data.frontArt} alt={data.name} />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {data.name}
-        </Typography>
-        <Typography gutterBottom variant="h6" component="div">
-          {data.subtitle}
-        </Typography>
-
-        {collectionCounter()}
-      </CardContent>
+      <CardContent>{collectionCounter()}</CardContent>
     </Styles.Card>
   );
 }
