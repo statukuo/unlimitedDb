@@ -11,9 +11,10 @@ import BrushIcon from "@mui/icons-material/Brush";
 
 const Styles = {
   Image: styled.img`
-    width: ${(props) => (props.show ? "100%" : "0%")};
+    width: ${(props) => (props.show ? "100%" : "0")};
     opacity: ${(props) => (props.show ? "100%" : "0%")};
     transition: all 500ms ease-in-out;
+    border-radius: 12px;
   `,
   Text: styled(Typography)`
     display: flex;
@@ -22,6 +23,9 @@ const Styles = {
   `,
   ImageCard: styled(Paper)`
     margin: 10px;
+    border-radius: 12px;
+    line-height: 0;
+    display: flex;
   `,
   DataCard: styled(Grid)`
     margin: 10px;
@@ -123,7 +127,7 @@ export function SWUCardDetails({ cardId }) {
                 </Styles.Text>
               </Grid>
               <Grid size={{ xs: 8 }}>
-                <Styles.Text variant="h4">
+                <Styles.Text variant="h4" sx={{ flexFlow: "wrap" }}>
                   {cardData.traits?.map((trait) => {
                     return <Styles.Chip label={trait} key={trait} />;
                   })}

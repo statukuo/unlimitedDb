@@ -12,6 +12,7 @@ import { useCollection } from "../contexts/CollectionContext";
 const Styles = {
   Card: styled(Card)`
     margin: 10px;
+    border-radius: 12px;
   `,
   CardImage: styled.img`
     width: 100%;
@@ -40,22 +41,24 @@ export function SWUListCard({ data }) {
     const currentCount = userCollection?.[data.set]?.[data.number] || 0;
 
     return (
-      <Styles.CollectionCounter>
-        <Button onClick={() => updateCount(Math.max(currentCount - 1, 0))}>
-          <RemoveIcon />
-        </Button>
-        <Typography>{currentCount}</Typography>
-        <Button onClick={() => updateCount(currentCount + 1)}>
-          <AddIcon />
-        </Button>
-      </Styles.CollectionCounter>
+      <CardContent>
+        <Styles.CollectionCounter>
+          <Button onClick={() => updateCount(Math.max(currentCount - 1, 0))}>
+            <RemoveIcon />
+          </Button>
+          <Typography>{currentCount}</Typography>
+          <Button onClick={() => updateCount(currentCount + 1)}>
+            <AddIcon />
+          </Button>
+        </Styles.CollectionCounter>
+      </CardContent>
     );
   };
 
   return (
     <Styles.Card>
       <Styles.CardImage src={data.backArt || data.frontArt} alt={data.name} />
-      <CardContent>{collectionCounter()}</CardContent>
+      {collectionCounter()}
     </Styles.Card>
   );
 }
