@@ -5,6 +5,7 @@ import { Box, Typography } from "@mui/material";
 import styled from "styled-components";
 import { COLORS } from "../constants";
 import ReplyIcon from '@mui/icons-material/Reply';
+import { CostIcon } from "./CostIcon";
 
 const Styles = {
     CardText: styled(Typography)`
@@ -20,13 +21,16 @@ export function CardText({ cardText, variant }) {
     const replaceCost = (baseText) => {
         let replacedTextCost = baseText;
 
-        replacedTextCost = reactStringReplace(replacedTextCost, /({{Exhaust}})/g, (match, idx) =>
+        replacedTextCost = reactStringReplace(replacedTextCost, /({*{*Exhaust}*}*)/g, (match, idx) =>
             <Box fontWeight='bold' display='inline' key={match + idx + Math.random()}><ReplyIcon sx={{ transform: "scaleX(-1)" }} /></Box>
         );
 
-        replacedTextCost = reactStringReplace(replacedTextCost, /(Exhaust)/g, (match, idx) =>
-            <Box fontWeight='bold' display='inline' key={match + idx + Math.random()}><ReplyIcon sx={{ transform: "scaleX(-1)" }} /></Box>
+        replacedTextCost = reactStringReplace(replacedTextCost, /({*{*C=\d}*}*)/g, (match, idx) => {
+            return <Box fontWeight='bold' display='inline' key={match + idx + Math.random()}><CostIcon cost={match.match(/\d/g)} /></Box>;
+        }
+
         );
+
         return replacedTextCost;
     };
 
