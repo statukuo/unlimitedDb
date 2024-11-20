@@ -93,7 +93,6 @@ export function LandingPage() {
       <Styles.CardContainer container spacing={0.5} columns={2}>
         {userDeckList.map(createDeckList)}
       </Styles.CardContainer>
-
       {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
     </BasePage>
   );

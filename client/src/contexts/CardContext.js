@@ -18,9 +18,12 @@ export function CardListProvider({ children }) {
   const [possibleFilters, setPossibleFilters] = useState({});
   const [filter, setFilter] = useState({});
   const [emptyFilters, setEmptyFilter] = useState({});
+  const [fetchingCards, setFetchingCards] = useState(true);
+
+
 
   useEffect(() => {
-    const fetchCardList = async () => {
+    const fetchFilters = async () => {
       const retrievedFilters = await getAllFilters();
 
       const tempFilter = {};
@@ -37,29 +40,29 @@ export function CardListProvider({ children }) {
       setEmptyFilter(tempFilter);
     };
 
+    const fetchCardList = async () => {
+      setCardList(await getAllCards());
+    };
+
     fetchCardList();
+    fetchFilters();
   }, []);
 
   const [debouncedFilter] = useDebounce(filter, 1000);
 
-  useEffect(() => {
-    const fetchCardList = async () => {
-      if (!cardList.length) {
-        setCardList(await getAllCards());
-      }
 
-      if (debouncedFilter) {
-        setFilteredList(await getAllCards(debouncedFilter));
-      } else {
-        setFilteredList([]);
-      }
+  useEffect(() => {
+    const fetchFilteredList = async () => {
+      setFilteredList(await getAllCards(debouncedFilter));
+      setFetchingCards(false);
     };
 
-    fetchCardList();
+    fetchFilteredList();
   }, [debouncedFilter]);
 
   const apllyFilters = (filters) => {
     setFilter(filters);
+    setFetchingCards(true);
   };
 
   const clearFilter = () => {
@@ -81,7 +84,8 @@ export function CardListProvider({ children }) {
     apllyFilters,
     clearFilter,
     getCardData,
-    possibleFilters
+    possibleFilters,
+    fetchingCards
   };
 
   return <CardlistContext.Provider value={value}>{children}</CardlistContext.Provider>;

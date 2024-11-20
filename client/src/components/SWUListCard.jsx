@@ -24,7 +24,7 @@ const Styles = {
   `,
 };
 
-export function SWUCard({ data }) {
+export function SWUListCard({ data }) {
   const { isLoggedIn } = useAuth();
   const { userCollection, updateCollection } = useCollection();
 
