@@ -7,17 +7,18 @@ import { Grid2 as Grid } from "@mui/material";
 import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useCardList } from "../contexts/CardContext";
+import { Loading } from "../components/Loading";
 
 const PAGINATION = 36;
 
 const Styles = {
   CardContainer: styled(Grid)`
-    max-width: 1800px;
+    max-width: 1200px;
   `,
 };
 
 export function CardListPage() {
-  const { cardList, filteredList, filter } = useCardList();
+  const { filteredList, filter, fetchingCards } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
 
   return (
@@ -26,33 +27,33 @@ export function CardListPage() {
         <CardFilter activeFilters={filter} />
       </SidePanel>
 
-      <InfiniteScroll
-        dataLength={currentShowing} //This is important field to render the next data
-        next={() =>
-          setCurrentShowing(
-            Math.min(currentShowing + PAGINATION, cardList.length)
-          )
-        }
-        hasMore={currentShowing < cardList.length}
-        loader={<h4>Loading...</h4>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
-          </p>
-        }
-      >
-        <Styles.CardContainer container spacing={0.5} columns={12}>
-          {(filteredList.length ? filteredList : cardList)
-            .slice(0, currentShowing)
-            .map((card, idx) => {
+      <Loading loadCondition={fetchingCards}>
+        <InfiniteScroll
+          dataLength={currentShowing} //This is important field to render the next data
+          next={() =>
+            setCurrentShowing(
+              Math.min(currentShowing + PAGINATION, filteredList.length)
+            )
+          }
+          hasMore={currentShowing < filteredList.length}
+          loader={<h4>Loading...</h4>}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          <Styles.CardContainer container spacing={0.5} columns={12}>
+            {filteredList.slice(0, currentShowing).map((card, idx) => {
               return (
-                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }} key={idx}>
+                <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
                   <SWUCard key={idx} data={card} />
                 </Grid>
               );
             })}
-        </Styles.CardContainer>
-      </InfiniteScroll>
+          </Styles.CardContainer>
+        </InfiniteScroll>
+      </Loading>
     </BasePage>
   );
 }
