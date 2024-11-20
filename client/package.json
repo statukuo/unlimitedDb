@@ -22,6 +22,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "*",
+    "react-string-replace": "^1.1.1",
     "styled-components": "^6.1.13",
     "use-debounce": "^10.0.4"
   },

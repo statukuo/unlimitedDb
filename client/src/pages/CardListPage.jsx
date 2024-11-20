@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SWUCard } from "../components/SWUCard";
+import { SWUListCard } from "../components/SWUListCard";
 import styled from "styled-components";
 import { CardFilter } from "../components/CardFilter";
 import { SidePanel } from "../components/SidePanel";
@@ -8,6 +8,7 @@ import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useCardList } from "../contexts/CardContext";
 import { Loading } from "../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const PAGINATION = 36;
 
@@ -20,6 +21,7 @@ const Styles = {
 export function CardListPage() {
   const { filteredList, filter, fetchingCards } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
+  const navigate = useNavigate();
 
   return (
     <BasePage>
@@ -46,8 +48,12 @@ export function CardListPage() {
           <Styles.CardContainer container spacing={0.5} columns={12}>
             {filteredList.slice(0, currentShowing).map((card, idx) => {
               return (
-                <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
-                  <SWUCard key={idx} data={card} />
+                <Grid
+                  size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
+                  key={idx}
+                  onClick={() => navigate(`/cards/${card.set}_${card.number}`)}
+                >
+                  <SWUListCard key={idx} data={card} />
                 </Grid>
               );
             })}
