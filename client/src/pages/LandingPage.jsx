@@ -1,32 +1,56 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Card, Grid2 as Grid, Typography } from "@mui/material";
+import {
+  Button,
+  Grid2 as Grid,
+  Paper,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
 import { getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../components/Loading";
+import { SWUCardDeck } from "../components/SWUCardDeck";
 
 const Styles = {
-  CardContainer: styled(Grid)`
+  DeckContainer: styled(Grid)`
     max-width: 1800px;
+    width: 100%;
   `,
-  Card: styled(Card)`
-    margin: 10px;
+  Deck: styled(Paper)`
+    margin: 10px 20px;
+    padding: 30px;
+    border-radius: 12px;
   `,
   CardImage: styled.img`
-    width: 100%;
+    margin: 5%;
+    width: 90%;
     display: block;
+  `,
+  DetailsButton: styled(Button)`
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  `,
+  CardList: styled(Grid)`
+    ${(props) => props.theme.breakpoints.down("md")} {
+      display: none;
+    }
   `,
 };
 
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
-  const { getCardData } = useCardList();
+  const theme = useTheme();
+  const { getCardData, cardList } = useCardList();
   const navigate = useNavigate();
 
   const [userDeckList, setUserDeckList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -41,29 +65,82 @@ export function LandingPage() {
     fetchUserDeckList();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    setLoading(!cardList.length);
+  }, [cardList]);
+
   const createDeckList = (deckList) => {
+    if (loading) {
+      return;
+    }
+
     const leaderCardData = getCardData(deckList.leader.id);
     const baseCardData = getCardData(deckList.base.id);
+    const listCardData = deckList.list.map(({ id, count }) => ({
+      ...getCardData(id),
+      count,
+    }));
+    const sideboardCardData = deckList.sideboard.map(({ id, count }) => ({
+      ...getCardData(id),
+      count,
+    }));
 
     return (
-      <Styles.Card key={deckList.title}>
-        <Typography variant="h5">{deckList.title}</Typography>
+      <Styles.Deck key={deckList.title} elevation={24}>
         <Grid container>
-          <Grid size={6}>
-            <Styles.CardImage
-              src={leaderCardData?.frontArt}
-              alt={leaderCardData?.name}
-            />
-          </Grid>
-          <Grid size={6}>
-            <Styles.CardImage
-              src={baseCardData?.frontArt}
-              alt={baseCardData?.name}
-            />
+          <Typography variant="h5">{deckList.title}</Typography>
+          <Grid container>
+            <Grid size={{ xs: 12, md: 3 }} alignContent="center">
+              <Styles.CardImage
+                src={leaderCardData?.frontArt}
+                alt={leaderCardData?.name}
+              />
+              <Styles.CardImage
+                src={baseCardData?.frontArt}
+                alt={baseCardData?.name}
+              />
+              <Styles.DetailsButton
+                variant="contained"
+                onClick={() => navigate("/deck/" + deckList._id)}
+              >
+                View details
+              </Styles.DetailsButton>
+            </Grid>
+
+            <Styles.CardList theme={theme} size={{ md: 6 }}>
+              <Grid container>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="h4" align="center">
+                    List
+                  </Typography>
+                </Grid>
+                {listCardData.map((cardData, idx) => (
+                  <Grid size={{ xs: 6 }} key={idx}>
+                    <SWUCardDeck
+                      handleSelectCard={() => {}}
+                      data={cardData}
+                      forceSmall={true}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Styles.CardList>
+            <Styles.CardList theme={theme} size={{ md: 3 }}>
+              <Typography variant="h4" align="center">
+                Sideboard
+              </Typography>
+              {sideboardCardData.map((cardData, idx) => (
+                <SWUCardDeck
+                  handleSelectCard={() => {}}
+                  data={cardData}
+                  forceSmall={true}
+                  key={idx}
+                />
+              ))}
+            </Styles.CardList>
           </Grid>
         </Grid>
-        <Button onClick={() => navigate("/deck/" + deckList._id)}>View</Button>
-      </Styles.Card>
+      </Styles.Deck>
     );
   };
 
@@ -90,10 +167,12 @@ export function LandingPage() {
 
   return (
     <BasePage>
-      <Styles.CardContainer container spacing={0.5} columns={2}>
-        {userDeckList.map(createDeckList)}
-      </Styles.CardContainer>
-      {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
+      <Loading loadCondition={loading}>
+        <Styles.DeckContainer container spacing={0.5}>
+          {userDeckList.map(createDeckList)}
+        </Styles.DeckContainer>
+        {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
+      </Loading>
     </BasePage>
   );
 }

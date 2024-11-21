@@ -18,7 +18,7 @@ export function CardDialog({ cardData, handleCloseDialog, showCollection }) {
     <Dialog
       onClose={handleCloseDialog}
       aria-labelledby="customized-dialog-title"
-      open={cardData}
+      open={!!cardData}
     >
       <DialogTitle sx={{ m: 0, p: 1 }} id="customized-dialog-title">
         {cardData.name}

@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 
 const Styles = {
   BasePage: styled(Box)`
-    display: flex;
+    display: block;
     justify-content: center;
     width: 100%;
     place-self: center;
