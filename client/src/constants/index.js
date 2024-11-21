@@ -3,7 +3,15 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000'
 const COLORS = {
   COST: "orange",
   POWER: "#a31545",
-  HP: "#3f51b5"
+  HP: "#3f51b5",
+  TAG_BACKGROUND: "#455A64",
+  Vigilance: "#6694ce",
+  Command: "#41ad49",
+  Aggression: "#d2232a",
+  Cunning: "#fdb933",
+  Villainy: "#040004",
+  Heroism: "#c6c1a0",
+  "": ""
 };
 const SET_ORDER = {
   SOR: 1,

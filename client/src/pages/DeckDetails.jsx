@@ -8,6 +8,7 @@ import {
   Paper,
   Select,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { BasePage } from "./BasePage";
 import styled from "styled-components";
@@ -25,11 +26,23 @@ import {
   RARITY_ORDER,
   SET_ORDER,
   TYPE_ORDER,
+  COLORS,
 } from "../constants";
 
 const Styles = {
   CardList: styled(Grid)`
     position: relative;
+    ${(props) => props.theme.breakpoints.down("sm")} {
+      height: 80px;
+      overflow: hidden;
+      margin: 5px;
+      border-radius: 12px;
+      p {
+        position: relative;
+        font-weight: bolder;
+        top: 0;
+      }
+    }
   `,
   Card: styled.img`
     width: 80%;
@@ -37,6 +50,52 @@ const Styles = {
     margin-left: ${(props) => props.id * 5 + "%"};
     margin-top: ${(props) => (3 - props.id) * 5 + "%"};
     border-radius: 12px;
+    ${(props) => props.theme.breakpoints.down("sm")} {
+      width: 80%;
+      display: ${(props) => (props.id !== 1 ? "none" : "block")};
+      margin-top: ${(props) => (props.type !== "Unit" ? "-60%" : "-20%")};
+      margin-left: 30%;
+    }
+  `,
+  CardInfo: styled(Grid)`
+    display: none;
+    ${(props) => props.theme.breakpoints.down("sm")} {
+      display: flex;
+      position: absolute;
+      font-weight: bolder;
+      top: 0;
+      color: white;
+      height: 100%;
+      width: 100%;
+    }
+  `,
+  CardInfoText: styled(Grid)`
+    background-color: ${COLORS.TAG_BACKGROUND};
+    align-content: center;
+    p {
+      margin-left: 10px;
+    }
+  `,
+  CardInfoCount: styled(Grid)`
+    backdrop-filter: blur(10px);
+    align-content: center;
+    h2:before {
+      content: "x";
+      font-size: 14px;
+    }
+  `,
+  CardInfoGradient: styled(Grid)`
+    background-image: linear-gradient(
+      to right,
+      ${COLORS.TAG_BACKGROUND},
+      rgba(255, 255, 255, 0)
+    );
+  `,
+  CardInfoAspect: styled.span`
+    background-color: ${(props) => COLORS[props.id]};
+    width: 20px;
+    height: 50%;
+    display: block;
   `,
   ButtonGroup: styled(ButtonGroup)`
     margin-left: 10%;
@@ -64,6 +123,7 @@ const Styles = {
 
 export function DeckDetails() {
   const { deckId } = useParams();
+  const theme = useTheme();
   const { getCardData, cardList } = useCardList();
   const [deckData, setDeckData] = useState({});
   const [leader, setLeader] = useState({});
@@ -165,6 +225,30 @@ export function DeckDetails() {
     setSideboard(sortList(sideboard, sortMethod));
   }, [sortMethod]);
 
+  const cardInfo = (data) => {
+    return (
+      <Styles.CardInfo theme={theme} container>
+        <Styles.CardInfoText size={{ xs: 1 }}>
+          <Styles.CardInfoAspect id={data.aspects[0] || ""} />
+          <Styles.CardInfoAspect id={data.aspects[1] || ""} />
+        </Styles.CardInfoText>
+        <Styles.CardInfoText size={{ xs: 5 }}>
+          <Typography align="left">
+            {data.name}
+            {data.subtitle ? `, ${data.subtitle}` : ""}
+          </Typography>
+          <Typography align="left">Cost: {data.cost}</Typography>
+        </Styles.CardInfoText>
+        <Styles.CardInfoGradient size={{ xs: 2 }} />
+        <Styles.CardInfoCount size={{ xs: 2 }} offset={{ xs: 2 }}>
+          <Typography align="center" variant="h2">
+            {data.count}
+          </Typography>
+        </Styles.CardInfoCount>
+      </Styles.CardInfo>
+    );
+  };
+
   const cardCount = (count) => {
     return (
       <Typography align="center">
@@ -246,17 +330,21 @@ export function DeckDetails() {
             {list.map((card) => {
               return (
                 <Styles.CardList
-                  size={{ xs: 6, sm: 4, md: 2 }}
+                  theme={theme}
+                  size={{ xs: 12, sm: 4, md: 2 }}
                   key={card?.name}
                 >
                   {times(card.count).map((_, idx) => (
                     <Styles.Card
+                      theme={theme}
+                      type={card?.type}
                       src={card?.frontArt}
                       alt="sideboard"
                       key={idx}
                       id={card.count - idx}
                     />
                   ))}
+                  {cardInfo(card)}
                   {cardCount(card.count)}
                 </Styles.CardList>
               );
@@ -275,17 +363,20 @@ export function DeckDetails() {
             {sideboard.map((card) => {
               return (
                 <Styles.CardList
-                  size={{ xs: 6, sm: 4, md: 2 }}
+                  theme={theme}
+                  size={{ xs: 12, sm: 4, md: 2 }}
                   key={card?.name}
                 >
                   {times(card.count).map((_, idx) => (
                     <Styles.Card
+                      theme={theme}
                       src={card?.frontArt}
                       alt="sideboard"
                       key={idx}
                       id={card.count - idx}
                     />
                   ))}
+                  {cardInfo(card)}
                   {cardCount(card.count)}
                 </Styles.CardList>
               );
