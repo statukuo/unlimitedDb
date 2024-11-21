@@ -8,6 +8,7 @@ import { AspectIcons } from "./AspectIcons";
 import { CardText } from "./CardText";
 import { COLORS } from "../constants";
 import BrushIcon from "@mui/icons-material/Brush";
+import { ContentRowWithDivider } from "./RowDivider";
 
 const Styles = {
   Image: styled.img`
@@ -30,28 +31,6 @@ const Styles = {
   DataCard: styled(Grid)`
     margin: 10px;
     padding: 10px;
-  `,
-  Row: styled(Grid)`
-    width: 100%;
-  `,
-  RowDivider: styled(Grid)`
-    width: 100%;
-    &:before {
-      content: "";
-      height: 1px;
-      /* I've removed the vendor prefixes, if you are looking to support older browsers
-       then refer to older version of this answer.
-    */
-      background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(147, 147, 147, 1) 50%,
-        rgba(0, 0, 0, 0) 100%
-      );
-      display: block;
-      margin-bottom: 10px;
-      margin-top: 10px;
-    }
   `,
   Chip: styled(Chip)`
     margin: 5px;
@@ -94,7 +73,7 @@ export function SWUCardDetails({ cardId }) {
         </Grid>
         <Grid size={{ xs: 12, md: 8 }}>
           <Styles.DataCard container>
-            <Styles.Row container>
+            <ContentRowWithDivider>
               <Grid size={{ xs: 12 }}>
                 <Styles.Text variant="h2">
                   {cardData.unique ? <AutoAwesomeRoundedIcon /> : null}
@@ -102,9 +81,8 @@ export function SWUCardDetails({ cardId }) {
                 </Styles.Text>
                 <Styles.Text variant="h3">{cardData.subtitle}</Styles.Text>
               </Grid>
-              <Styles.RowDivider />
-            </Styles.Row>
-            <Styles.Row container>
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
               <Grid size={{ xs: 2 }}>
                 <Styles.Text variant="h4" color={COLORS.COST}>
                   {cardData.cost}
@@ -118,9 +96,8 @@ export function SWUCardDetails({ cardId }) {
               <Grid size={{ xs: 2 }}>
                 <Styles.Text variant="h4">{cardData.type}</Styles.Text>
               </Grid>
-              <Styles.RowDivider />
-            </Styles.Row>
-            <Styles.Row container>
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
               <Grid size={{ xs: 2 }}>
                 <Styles.Text variant="h4" color={COLORS.POWER}>
                   {cardData.power}
@@ -138,30 +115,27 @@ export function SWUCardDetails({ cardId }) {
                   {cardData.hp}
                 </Styles.Text>
               </Grid>
-              <Styles.RowDivider />
-            </Styles.Row>
-            <Styles.Row container>
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
               <Grid size={{ xs: 10 }}>
                 <CardText cardText={cardData.frontText} variant="h5" />
               </Grid>
-              <Styles.RowDivider />
-            </Styles.Row>
+            </ContentRowWithDivider>
             {cardData.backText ? (
-              <Styles.Row container>
+              <ContentRowWithDivider>
                 <Grid size={{ xs: 10 }}>
                   <CardText cardText={cardData.backText} variant="h5" />
                 </Grid>
-                <Styles.RowDivider />
-              </Styles.Row>
+              </ContentRowWithDivider>
             ) : null}
-            <Styles.Row container>
+            <ContentRowWithDivider>
               <Grid size={{ xs: 12 }}>
                 <Styles.Text variant="h8">
                   <BrushIcon />
                   {cardData.artist}
                 </Styles.Text>
               </Grid>
-            </Styles.Row>
+            </ContentRowWithDivider>
           </Styles.DataCard>
         </Grid>
       </Grid>
