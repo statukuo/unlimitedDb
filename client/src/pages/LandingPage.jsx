@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Grid2 as Grid, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  Grid2 as Grid,
+  Paper,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -30,10 +36,16 @@ const Styles = {
     margin-right: auto;
     display: block;
   `,
+  CardList: styled(Grid)`
+    ${(props) => props.theme.breakpoints.down("md")} {
+      display: none;
+    }
+  `,
 };
 
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
+  const theme = useTheme();
   const { getCardData, cardList } = useCardList();
   const navigate = useNavigate();
 
@@ -78,7 +90,7 @@ export function LandingPage() {
         <Grid container>
           <Typography variant="h5">{deckList.title}</Typography>
           <Grid container>
-            <Grid size={3} alignContent="center">
+            <Grid size={{ xs: 12, md: 3 }} alignContent="center">
               <Styles.CardImage
                 src={leaderCardData?.frontArt}
                 alt={leaderCardData?.name}
@@ -94,7 +106,8 @@ export function LandingPage() {
                 View details
               </Styles.DetailsButton>
             </Grid>
-            <Grid size={6}>
+
+            <Styles.CardList theme={theme} size={{ md: 6 }}>
               <Grid container>
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="h4" align="center">
@@ -111,8 +124,8 @@ export function LandingPage() {
                   </Grid>
                 ))}
               </Grid>
-            </Grid>
-            <Grid size={3}>
+            </Styles.CardList>
+            <Styles.CardList theme={theme} size={{ md: 3 }}>
               <Typography variant="h4" align="center">
                 Sideboard
               </Typography>
@@ -124,7 +137,7 @@ export function LandingPage() {
                   key={idx}
                 />
               ))}
-            </Grid>
+            </Styles.CardList>
           </Grid>
         </Grid>
       </Styles.Deck>

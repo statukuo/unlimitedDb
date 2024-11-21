@@ -7,7 +7,7 @@ import LensIcon from "@mui/icons-material/Lens";
 import { SWUCardDeckSmall } from "./SWUCardDeckSmall";
 import { SIZES } from "../constants";
 
-const getBreakpoint = (theme, hey) => {
+const getBreakpoint = (theme) => {
   if (theme.forceSmall) {
     return theme.breakpoints.up("sm");
   }
@@ -17,7 +17,7 @@ const getBreakpoint = (theme, hey) => {
 const Styles = {
   CardList: styled(Grid)`
     position: relative;
-    ${(props) => getBreakpoint(props.theme, "barfoo")} {
+    ${(props) => getBreakpoint(props.theme)} {
       width: 90%;
       height: ${SIZES.TAB_SIZE}px;
       overflow: hidden;
@@ -36,7 +36,7 @@ const Styles = {
     margin-left: ${(props) => props.id * 5 + "%"};
     margin-top: ${(props) => (3 - props.id) * 5 + "%"};
     border-radius: 12px;
-    ${(props) => getBreakpoint(props.theme, "foobar")} {
+    ${(props) => getBreakpoint(props.theme)} {
       width: 80%;
       display: ${(props) => (props.id !== 1 ? "none" : "block")};
       margin-top: ${(props) => (props.type !== "Event" ? "-20%" : "-60%")};
@@ -45,13 +45,13 @@ const Styles = {
   `,
   CardCount: styled(Typography)`
     display: block;
-    ${(props) => getBreakpoint(props.theme, "foo")} {
+    ${(props) => getBreakpoint(props.theme)} {
       display: none;
     }
   `,
   CardSmall: styled.div`
     display: none;
-    ${(props) => getBreakpoint(props.theme, "bar")} {
+    ${(props) => getBreakpoint(props.theme)} {
       display: block;
     }
   `,
