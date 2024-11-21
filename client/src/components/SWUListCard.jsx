@@ -25,7 +25,7 @@ const Styles = {
   `,
 };
 
-export function SWUListCard({ data }) {
+export function SWUListCard({ data, showCollection }) {
   const { isLoggedIn } = useAuth();
   const { userCollection, updateCollection } = useCollection();
 
@@ -34,7 +34,7 @@ export function SWUListCard({ data }) {
   };
 
   const collectionCounter = () => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !showCollection) {
       return;
     }
 
