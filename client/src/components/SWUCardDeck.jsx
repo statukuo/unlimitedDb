@@ -5,14 +5,23 @@ import { times } from "lodash";
 import LensOutlinedIcon from "@mui/icons-material/LensOutlined";
 import LensIcon from "@mui/icons-material/Lens";
 import { SWUCardDeckSmall } from "./SWUCardDeckSmall";
+import { SIZES } from "../constants";
+
+const getBreakpoint = (theme, hey) => {
+  if (theme.forceSmall) {
+    return theme.breakpoints.up("sm");
+  }
+  return theme.breakpoints.down("sm");
+};
 
 const Styles = {
   CardList: styled(Grid)`
     position: relative;
-    ${(props) => props.theme.breakpoints.down("sm")} {
-      height: 80px;
+    ${(props) => getBreakpoint(props.theme, "barfoo")} {
+      width: 90%;
+      height: ${SIZES.TAB_SIZE}px;
       overflow: hidden;
-      margin: 5px;
+      margin: 1% 5%;
       border-radius: 12px;
       p {
         position: relative;
@@ -27,30 +36,45 @@ const Styles = {
     margin-left: ${(props) => props.id * 5 + "%"};
     margin-top: ${(props) => (3 - props.id) * 5 + "%"};
     border-radius: 12px;
-    ${(props) => props.theme.breakpoints.down("sm")} {
+    ${(props) => getBreakpoint(props.theme, "foobar")} {
       width: 80%;
       display: ${(props) => (props.id !== 1 ? "none" : "block")};
       margin-top: ${(props) => (props.type !== "Event" ? "-20%" : "-60%")};
       margin-left: 30%;
     }
   `,
+  CardCount: styled(Typography)`
+    display: block;
+    ${(props) => getBreakpoint(props.theme, "foo")} {
+      display: none;
+    }
+  `,
+  CardSmall: styled.div`
+    display: none;
+    ${(props) => getBreakpoint(props.theme, "bar")} {
+      display: block;
+    }
+  `,
 };
 
-export function SWUCardDeck({ handleSelectCard, data }) {
+export function SWUCardDeck({ handleSelectCard, data, forceSmall }) {
   const theme = useTheme();
+  theme.forceSmall = forceSmall;
 
   const cardCount = (count) => {
     return (
-      <Typography align="center">
+      <Styles.CardCount align="center" theme={theme}>
         {times(3).map((_, idx) => {
           if (idx < count) {
             return <LensIcon key={idx}></LensIcon>;
           }
           return <LensOutlinedIcon key={idx}></LensOutlinedIcon>;
         })}
-      </Typography>
+      </Styles.CardCount>
     );
   };
+
+  console.log(data);
 
   return (
     <Styles.CardList
@@ -69,7 +93,9 @@ export function SWUCardDeck({ handleSelectCard, data }) {
           id={data.count - idx}
         />
       ))}
-      <SWUCardDeckSmall handleSelectCard={handleSelectCard} data={data} />
+      <Styles.CardSmall theme={theme}>
+        <SWUCardDeckSmall handleSelectCard={handleSelectCard} data={data} />
+      </Styles.CardSmall>
       {cardCount(data.count)}
     </Styles.CardList>
   );

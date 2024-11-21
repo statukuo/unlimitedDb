@@ -47,6 +47,9 @@ const RARITY_ORDER = {
   "Common": 4,
   "Special": 5
 };
+const SIZES = {
+  TAB_SIZE: 60
+};
 
 export {
   BACKEND_URL,
@@ -54,5 +57,6 @@ export {
   SET_ORDER,
   ASPECT_ORDER,
   RARITY_ORDER,
-  TYPE_ORDER
+  TYPE_ORDER,
+  SIZES
 };
