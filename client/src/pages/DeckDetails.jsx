@@ -184,11 +184,11 @@ export function DeckDetails() {
             </Grid>
           </ContentRowWithDivider>
           <ContentRowWithDivider>
-            {list.map((card) => (
+            {list.map((card, idx) => (
               <SWUCardDeck
                 handleSelectCard={handleSelectCard}
                 data={card}
-                key={card}
+                key={idx}
               />
             ))}
           </ContentRowWithDivider>
@@ -202,11 +202,11 @@ export function DeckDetails() {
             </Grid>
           </ContentRowWithDivider>
           <ContentRowWithDivider>
-            {sideboard.map((card) => (
+            {sideboard.map((card, idx) => (
               <SWUCardDeck
                 handleSelectCard={handleSelectCard}
                 data={card}
-                key={card}
+                key={idx}
               />
             ))}
           </ContentRowWithDivider>

@@ -21,6 +21,9 @@ const Styles = {
     align-content: center;
     p {
       margin-left: 10px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   `,
   CardInfoCount: styled(Grid)`

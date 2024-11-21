@@ -30,7 +30,7 @@ const Styles = {
     ${(props) => props.theme.breakpoints.down("sm")} {
       width: 80%;
       display: ${(props) => (props.id !== 1 ? "none" : "block")};
-      margin-top: ${(props) => (props.type !== "Unit" ? "-60%" : "-20%")};
+      margin-top: ${(props) => (props.type !== "Event" ? "-20%" : "-60%")};
       margin-left: 30%;
     }
   `,
