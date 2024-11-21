@@ -3,21 +3,12 @@ import { SWUListCard } from "../components/SWUListCard";
 import styled from "styled-components";
 import { CardFilter } from "../components/CardFilter";
 import { SidePanel } from "../components/SidePanel";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid2 as Grid,
-  IconButton,
-} from "@mui/material";
+import { Grid2 as Grid } from "@mui/material";
 import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useCardList } from "../contexts/CardContext";
 import { Loading } from "../components/Loading";
-import { useNavigate } from "react-router-dom";
-import CloseIcon from "@mui/icons-material/Close";
+import { CardDialog } from "../components/CardDialog";
 
 const PAGINATION = 36;
 
@@ -39,47 +30,17 @@ export function CardListPage() {
     setClickedCard(false);
   };
 
-  const navigate = useNavigate();
   return (
     <BasePage>
       <SidePanel>
         <CardFilter activeFilters={filter} />
       </SidePanel>
 
-      <Dialog
-        onClose={handleCloseDialog}
-        aria-labelledby="customized-dialog-title"
-        open={clickedCard}
-      >
-        <DialogTitle sx={{ m: 0, p: 1 }} id="customized-dialog-title">
-          {clickedCard.name}
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseDialog}
-          sx={(theme) => ({
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent sx={{ padding: 0 }}>
-          <SWUListCard data={clickedCard} />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            onClick={() =>
-              navigate(`/cards/${clickedCard.set}_${clickedCard.number}`)
-            }
-          >
-            Go to details
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CardDialog
+        cardData={clickedCard}
+        handleCloseDialog={handleCloseDialog}
+        showCollection={true}
+      />
 
       <Loading loadCondition={fetchingCards}>
         <InfiniteScroll
