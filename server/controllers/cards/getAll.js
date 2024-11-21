@@ -23,8 +23,8 @@ async function getAll(request, response) {
             sanitazedFilters.aspects = {};
             sanitazedFilters.aspects[getStrictFilter(filters.aspectsStrict)] = filters.aspects;
         }
-        if (filters.sets) {
-            sanitazedFilters.set = { $in: request.query.filters.sets };
+        if (filters.set) {
+            sanitazedFilters.set = { $in: request.query.filters.set };
         }
         if (filters.type) {
             sanitazedFilters.type = { $in: request.query.filters.type };
@@ -66,6 +66,8 @@ async function getAll(request, response) {
     }
 
     if (sanitazedFilters.$or.length === 0) { delete sanitazedFilters.$or; }
+
+    console.log(sanitazedFilters);
 
     let results = await Card.find(sanitazedFilters, null, { sort: { set: 1, number: 1 } });
     response.send(results).status(200);
