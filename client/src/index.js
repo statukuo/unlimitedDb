@@ -17,8 +17,26 @@ import { CardListProvider } from './contexts/CardContext';
 import { CardListPage } from './pages/CardListPage';
 import { DeckDetails } from './pages/DeckDetails';
 import { CardViewPage } from './pages/CardViewPage';
+import { DeckEditorPage } from './pages/DeckEditorPage';
 
 const router = createBrowserRouter([
+  {
+    element: <PrivateRoute />,
+    children: [
+      {
+        path: '/user',
+        element: <UserPage />
+      },
+      {
+        path: '/collection',
+        element: <CollectionPage />
+      },
+      {
+        path: '/deck/create',
+        element: <DeckEditorPage />
+      }
+    ]
+  },
   {
     path: "/",
     element: <LandingPage />,
@@ -42,19 +60,6 @@ const router = createBrowserRouter([
   {
     path: "/deck/:deckId",
     element: <DeckDetails />,
-  },
-  {
-    element: <PrivateRoute />,
-    children: [
-      {
-        path: '/user',
-        element: <UserPage />
-      },
-      {
-        path: '/collection',
-        element: <CollectionPage />
-      }
-    ]
   },
 ]);
 

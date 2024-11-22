@@ -1,9 +1,41 @@
-import { Grid2 as Grid, Typography } from "@mui/material";
+import {
+  Divider,
+  Grid2 as Grid,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { COLORS, SIZES } from "../constants";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 const Styles = {
+  CardList: styled(Grid)`
+    position: relative;
+    width: 90%;
+    height: ${SIZES.TAB_SIZE}px;
+    overflow: hidden;
+    margin: 1% 5%;
+    border-radius: 12px;
+    p {
+      position: relative;
+      font-weight: bolder;
+      top: 0;
+    }
+  `,
+  Card: styled.img`
+    width: 80%;
+    position: ${(props) => (props.id === 1 ? "relative" : "absolute")};
+    margin-left: ${(props) => props.id * 5 + "%"};
+    margin-top: ${(props) => (3 - props.id) * 5 + "%"};
+    border-radius: 12px;
+    width: 80%;
+    display: ${(props) => (props.id !== 1 ? "none" : "block")};
+    margin-top: ${(props) => (props.type !== "Event" ? "-20%" : "-60%")};
+    margin-left: 30%;
+  `,
   CardInfo: styled(Grid)`
     display: flex;
     position: absolute;
@@ -24,11 +56,25 @@ const Styles = {
     }
   `,
   CardInfoCount: styled(Grid)`
+    display: flex;
     backdrop-filter: blur(10px);
     align-content: center;
+    align-items: center;
+    background-image: linear-gradient(to left, black, rgba(255, 255, 255, 0));
     h3:before {
       content: "x";
+      height: 100%;
       font-size: 14px;
+      width: 100%;
+    }
+    h4 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    svg {
+      color: white;
     }
   `,
   CardInfoGradient: styled(Grid)`
@@ -48,28 +94,101 @@ const Styles = {
     height: ${SIZES.TAB_SIZE / 2}px;
     display: block;
   `,
+  CardButtons: styled(Grid)`
+    border-left: solid 1px white;
+    height: ${SIZES.TAB_SIZE}px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  `,
 };
 
-export function SWUCardDeckSmall({ handleSelectCard, data }) {
-  return (
-    <Styles.CardInfo container onClick={() => handleSelectCard(data)}>
-      <Styles.CardInfoAspectWrapper size={{ xs: 1 }}>
-        <Styles.CardInfoAspect id={data.aspects[0] || ""} />
-        <Styles.CardInfoAspect id={data.aspects[1] || ""} />
-      </Styles.CardInfoAspectWrapper>
-      <Styles.CardInfoText size={{ xs: 5 }}>
-        <Typography align="left">
-          {data.name}
-          {data.subtitle ? `, ${data.subtitle}` : ""}
-        </Typography>
-        <Typography align="left">Cost: {data.cost}</Typography>
-      </Styles.CardInfoText>
-      <Styles.CardInfoGradient size={{ xs: 2 }} />
-      <Styles.CardInfoCount size={{ xs: 2 }} offset={{ xs: 2 }}>
+export function SWUCardDeckSmall({
+  handleSelectCard,
+  data,
+  editable = false,
+  editableRemoveButtonFunction,
+  editableAddButtonFunction,
+}) {
+  const theme = useTheme();
+
+  const handleRemoveClick = (event) => {
+    event.stopPropagation();
+
+    editableRemoveButtonFunction(data);
+  };
+
+  const handleAddClick = (event) => {
+    event.stopPropagation();
+
+    editableAddButtonFunction(data);
+  };
+
+  const createEditableButtons = () => {
+    return (
+      <Grid container>
+        <Grid size={6}>
+          <Typography align="center" variant="h4">
+            {data.count}
+          </Typography>
+        </Grid>
+        <Styles.CardButtons size={6}>
+          <IconButton aria-label="delete" size="small" onClick={handleAddClick}>
+            <AddCircleIcon fontSize="inherit" />
+          </IconButton>
+          <Divider orientation="horizontal" color="white" flexItem />
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={handleRemoveClick}
+          >
+            <RemoveCircleIcon fontSize="inherit" />
+          </IconButton>
+        </Styles.CardButtons>
+      </Grid>
+    );
+  };
+
+  const createCount = () => {
+    return (
+      <Grid size={12}>
         <Typography align="center" variant="h3">
           {data.count}
         </Typography>
-      </Styles.CardInfoCount>
-    </Styles.CardInfo>
+      </Grid>
+    );
+  };
+
+  return (
+    <Styles.CardList
+      theme={theme}
+      key={data.name}
+      onClick={() => handleSelectCard(data)}
+    >
+      <Styles.Card
+        theme={theme}
+        type={data.type}
+        src={data.frontArt}
+        alt="sideboard"
+        id={1}
+      />
+      <Styles.CardInfo container onClick={() => handleSelectCard(data)}>
+        <Styles.CardInfoAspectWrapper size={{ xs: 1 }}>
+          <Styles.CardInfoAspect id={data.aspects[0] || ""} />
+          <Styles.CardInfoAspect id={data.aspects[1] || ""} />
+        </Styles.CardInfoAspectWrapper>
+        <Styles.CardInfoText size={{ xs: 5 }}>
+          <Typography align="left">
+            {data.name}
+            {data.subtitle ? `, ${data.subtitle}` : ""}
+          </Typography>
+          <Typography align="left">Cost: {data.cost}</Typography>
+        </Styles.CardInfoText>
+        <Styles.CardInfoGradient size={{ xs: 2 }} />
+        <Styles.CardInfoCount size={{ xs: 2 }} offset={{ xs: 2 }}>
+          {editable ? createEditableButtons() : createCount()}
+        </Styles.CardInfoCount>
+      </Styles.CardInfo>
+    </Styles.CardList>
   );
 }

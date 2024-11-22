@@ -5,30 +5,11 @@ import { times } from "lodash";
 import LensOutlinedIcon from "@mui/icons-material/LensOutlined";
 import LensIcon from "@mui/icons-material/Lens";
 import { SWUCardDeckSmall } from "./SWUCardDeckSmall";
-import { SIZES } from "../constants";
-
-const getBreakpoint = (theme) => {
-  if (theme.forceSmall) {
-    return theme.breakpoints.up("sm");
-  }
-  return theme.breakpoints.down("sm");
-};
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Styles = {
   CardList: styled(Grid)`
     position: relative;
-    ${(props) => getBreakpoint(props.theme)} {
-      width: 90%;
-      height: ${SIZES.TAB_SIZE}px;
-      overflow: hidden;
-      margin: 1% 5%;
-      border-radius: 12px;
-      p {
-        position: relative;
-        font-weight: bolder;
-        top: 0;
-      }
-    }
   `,
   Card: styled.img`
     width: 80%;
@@ -36,30 +17,15 @@ const Styles = {
     margin-left: ${(props) => props.id * 5 + "%"};
     margin-top: ${(props) => (3 - props.id) * 5 + "%"};
     border-radius: 12px;
-    ${(props) => getBreakpoint(props.theme)} {
-      width: 80%;
-      display: ${(props) => (props.id !== 1 ? "none" : "block")};
-      margin-top: ${(props) => (props.type !== "Event" ? "-20%" : "-60%")};
-      margin-left: 30%;
-    }
   `,
   CardCount: styled(Typography)`
     display: block;
-    ${(props) => getBreakpoint(props.theme)} {
-      display: none;
-    }
-  `,
-  CardSmall: styled.div`
-    display: none;
-    ${(props) => getBreakpoint(props.theme)} {
-      display: block;
-    }
   `,
 };
 
 export function SWUCardDeck({ handleSelectCard, data, forceSmall }) {
   const theme = useTheme();
-  theme.forceSmall = forceSmall;
+  const renderSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   const cardCount = (count) => {
     return (
@@ -74,7 +40,14 @@ export function SWUCardDeck({ handleSelectCard, data, forceSmall }) {
     );
   };
 
-  console.log(data);
+  if (forceSmall || renderSmall) {
+    return (
+      <SWUCardDeckSmall
+        handleSelectCard={() => handleSelectCard(data)}
+        data={data}
+      ></SWUCardDeckSmall>
+    );
+  }
 
   return (
     <Styles.CardList
@@ -93,9 +66,6 @@ export function SWUCardDeck({ handleSelectCard, data, forceSmall }) {
           id={data.count - idx}
         />
       ))}
-      <Styles.CardSmall theme={theme}>
-        <SWUCardDeckSmall handleSelectCard={handleSelectCard} data={data} />
-      </Styles.CardSmall>
       {cardCount(data.count)}
     </Styles.CardList>
   );
