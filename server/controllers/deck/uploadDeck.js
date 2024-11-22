@@ -18,11 +18,12 @@ async function uploadDeck(request, response) {
         ownerId: request.auth.uid
     };
 
-
-    const result = await Deck.findOneAndUpdate({ _id: deck._id, ownerId: request.auth.uid }, documentToUpload, { upsert: true });
-
-    console.log(result);
-
+    let result;
+    if (deck._id) {
+        result = await Deck.findOneAndUpdate({ _id: deck._id, ownerId: request.auth.uid }, documentToUpload, { new: true });
+    } else {
+        result = await Deck.create(documentToUpload);
+    }
     response.send(result).status(200);
 }
 

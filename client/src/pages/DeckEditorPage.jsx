@@ -28,7 +28,7 @@ import { DeckEditor } from "../components/DeckEditor";
 import { BottomPanel } from "../components/BottomPanel";
 import { sortList } from "../utils/sortCardList";
 import { uploadDeck } from "../api/decks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PAGINATION = 36;
 const ACCORDION_SPEED = 500;
