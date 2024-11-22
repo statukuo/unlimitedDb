@@ -14,7 +14,8 @@ const Styles = {
     background-color: white;
     right: 0;
     left: 0;
-    height: calc(100% + ${PULLER_SIZE}px);
+    height: ${PULLER_SIZE}px;
+    box-shadow: 0px -25px 30px rgba(50, 50, 50, 0.75);
     p {
       margin-top: ${PULLER_SIZE / 2}px;
     }
@@ -49,7 +50,7 @@ export function BottomPanel({ children, title }) {
           keepMounted: true,
         }}
       >
-        <Styles.PullerText boxShadow={24}>
+        <Styles.PullerText>
           <Styles.Puller />
           <Typography align="center">{title}</Typography>
         </Styles.PullerText>
