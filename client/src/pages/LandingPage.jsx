@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   Button,
+  Fab,
   Grid2 as Grid,
   Paper,
   Typography,
@@ -14,7 +15,8 @@ import { getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import { SWUCardDeck } from "../components/SWUCardDeck";
+import { SWUCardDeckSmallest } from "../components/SWUCardDeckSmallest";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
 
 const Styles = {
   DeckContainer: styled(Grid)`
@@ -40,6 +42,14 @@ const Styles = {
     ${(props) => props.theme.breakpoints.down("md")} {
       display: none;
     }
+  `,
+  CreateButton: styled(Fab)`
+    position: fixed;
+    bottom: 50px;
+    right: 0;
+    width: 70px;
+    border-radius: 25px 0 0 25px;
+    z-index: 50;
   `,
 };
 
@@ -115,11 +125,11 @@ export function LandingPage() {
                   </Typography>
                 </Grid>
                 {listCardData.map((cardData, idx) => (
-                  <Grid size={{ xs: 6 }} key={idx}>
-                    <SWUCardDeck
+                  <Grid size={{ xs: 12 }} key={idx}>
+                    <SWUCardDeckSmallest
                       handleSelectCard={() => {}}
                       data={cardData}
-                      forceSmall={true}
+                      smallest
                     />
                   </Grid>
                 ))}
@@ -130,10 +140,9 @@ export function LandingPage() {
                 Sideboard
               </Typography>
               {sideboardCardData.map((cardData, idx) => (
-                <SWUCardDeck
+                <SWUCardDeckSmallest
                   handleSelectCard={() => {}}
                   data={cardData}
-                  forceSmall={true}
                   key={idx}
                 />
               ))}
@@ -172,6 +181,16 @@ export function LandingPage() {
           {userDeckList.map(createDeckList)}
         </Styles.DeckContainer>
         {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
+
+        {isLoggedIn ? (
+          <Styles.CreateButton
+            color="success"
+            aria-label="add"
+            onClick={() => navigate("/deck/create")}
+          >
+            <NoteAddIcon />
+          </Styles.CreateButton>
+        ) : null}
       </Loading>
     </BasePage>
   );

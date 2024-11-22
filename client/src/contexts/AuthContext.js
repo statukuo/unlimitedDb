@@ -56,6 +56,7 @@ export function AuthProvider({ children }) {
           resolve(true);
         })
         .catch((error) => {
+          setIsLoggedIn(false);
           console.error(error);
           reject(error?.response?.data?.message || error.message);
         });
@@ -85,7 +86,10 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(true);
     } catch (error) {
       console.error(error);
-      if (error?.response?.statusCode === 401) setToken(null);
+      setIsLoggedIn(false);
+      if (error?.response?.statusCode === 401) {
+        setToken(null);
+      }
     }
   };
 
@@ -100,6 +104,11 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("token");
     }
   }, [token]);
+
+  useEffect(() => {
+    loginWithToken();
+  }, []);
+
 
   // This side effect runs only if we have a token, but no account or logged-in boolean.
   // This "if" statement is "true" only when refreshed, or re-opened the browser,

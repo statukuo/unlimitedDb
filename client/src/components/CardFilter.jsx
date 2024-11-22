@@ -9,6 +9,7 @@ const Styles = {
   CardFilterWrapper: styled.div`
     max-width: 800px;
     width: 90vw;
+    overflow: auto;
   `,
 };
 

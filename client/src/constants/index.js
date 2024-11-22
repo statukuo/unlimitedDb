@@ -48,7 +48,8 @@ const RARITY_ORDER = {
   "Special": 5
 };
 const SIZES = {
-  TAB_SIZE: 60
+  TAB_SIZE: 60,
+  SMALL_TAB_SIZE: 30
 };
 
 export {

@@ -25,7 +25,7 @@ const Styles = {
   `,
 };
 
-export function SWUListCard({ data, showCollection }) {
+export function SWUListCard({ data, showCollection, onClick, front }) {
   const { isLoggedIn } = useAuth();
   const { userCollection, updateCollection } = useCollection();
 
@@ -57,7 +57,11 @@ export function SWUListCard({ data, showCollection }) {
 
   return (
     <Styles.Card>
-      <Styles.CardImage src={data.backArt || data.frontArt} alt={data.name} />
+      <Styles.CardImage
+        src={front ? data.frontArt : data.backArt || data.frontArt}
+        alt={data.name}
+        onClick={() => onClick && onClick()}
+      />
       {collectionCounter()}
     </Styles.Card>
   );
