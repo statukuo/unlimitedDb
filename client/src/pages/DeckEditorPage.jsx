@@ -10,6 +10,7 @@ import {
   Box,
   Grid2 as Grid,
   IconButton,
+  Paper,
   Typography,
   useMediaQuery,
   useTheme,
@@ -30,6 +31,7 @@ import { uploadDeck } from "../api/decks";
 import { useNavigate } from "react-router-dom";
 
 const PAGINATION = 36;
+const ACCORDION_SPEED = 500;
 
 const Styles = {
   CardContainer: styled(Grid)`
@@ -234,7 +236,7 @@ export function DeckEditorPage() {
 
     return (
       <Styles.DeckContiner size={4} theme={theme}>
-        {deckEditor}
+        <Paper elevation={24}>{deckEditor}</Paper>
       </Styles.DeckContiner>
     );
   };
@@ -255,6 +257,9 @@ export function DeckEditorPage() {
           <Accordion
             expanded={expanded === "leader"}
             onChange={handleExpandAccordion("leader")}
+            TransitionProps={{
+              timeout: ACCORDION_SPEED,
+            }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -306,6 +311,9 @@ export function DeckEditorPage() {
           <Accordion
             expanded={expanded === "base"}
             onChange={handleExpandAccordion("base")}
+            TransitionProps={{
+              timeout: ACCORDION_SPEED,
+            }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -356,6 +364,9 @@ export function DeckEditorPage() {
           <Accordion
             expanded={expanded === "cards"}
             onChange={handleExpandAccordion("cards")}
+            TransitionProps={{
+              timeout: ACCORDION_SPEED,
+            }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
