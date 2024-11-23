@@ -17,6 +17,7 @@ import { CardListProvider } from './contexts/CardContext';
 import { CardListPage } from './pages/CardListPage';
 import { DeckDetails } from './pages/DeckDetails';
 import { CardViewPage } from './pages/CardViewPage';
+import { DeckCreatorPage } from './pages/DeckCreatorPage';
 import { DeckEditorPage } from './pages/DeckEditorPage';
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       },
       {
         path: '/deck/create',
+        element: <DeckCreatorPage />
+      },
+      {
+        path: '/deck/edit/:deckId',
         element: <DeckEditorPage />
       }
     ]
