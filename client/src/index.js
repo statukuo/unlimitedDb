@@ -19,6 +19,7 @@ import { DeckDetails } from './pages/DeckDetails';
 import { CardViewPage } from './pages/CardViewPage';
 import { DeckCreatorPage } from './pages/DeckCreatorPage';
 import { DeckEditorPage } from './pages/DeckEditorPage';
+import { YourDecksPage } from './pages/YourDecksPage';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/collection',
         element: <CollectionPage />
+      },
+      {
+        path: '/your/decks',
+        element: <YourDecksPage />
       },
       {
         path: '/deck/create',
