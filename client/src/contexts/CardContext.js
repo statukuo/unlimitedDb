@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import { getAllCards, getAllFilters } from "../api/cards";
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
+import { sortList } from "../utils/sortCardList";
 
 // init context
 const CardlistContext = createContext();
@@ -16,11 +17,13 @@ export function CardListProvider({ children }) {
   const [cardList, setCardList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [possibleFilters, setPossibleFilters] = useState({});
+  const [possibleLeaders, setPossibleLeaders] = useState([]);
+  const [possibleBases, setPossibleBases] = useState([]);
   const [filter, setFilter] = useState({});
   const [emptyFilters, setEmptyFilter] = useState({});
   const [fetchingCards, setFetchingCards] = useState(true);
-
-
+  const [sortForFilter, setSortForFilter] = useState();
+  const [onlyCardsFiltered, setOnlyCardsFiltered] = useState(false);
 
   useEffect(() => {
     const fetchFilters = async () => {
@@ -41,28 +44,50 @@ export function CardListProvider({ children }) {
     };
 
     const fetchCardList = async () => {
-      setCardList(await getAllCards());
+      const allCards = await getAllCards();
+      setCardList(allCards);
+      setPossibleLeaders(sortList(allCards.filter(({ type }) => type === "Leader"), "aspect"));
+      setPossibleBases(sortList(allCards.filter(({ type }) => type === "Base"), "aspect"));
     };
 
     fetchCardList();
     fetchFilters();
   }, []);
 
-  const [debouncedFilter] = useDebounce(filter, 1000);
-
-
   useEffect(() => {
-    const fetchFilteredList = async () => {
-      setFilteredList(await getAllCards(debouncedFilter));
+    debounced(filter);
+  }, [filter]);
+
+
+
+  // Debounce callback
+  const debounced = useDebouncedCallback(
+    async (filter) => {
+      let filteredCards = await getAllCards(filter);
+
+      if (onlyCardsFiltered) {
+        filteredCards = filteredCards.filter(
+          ({ type }) => type !== "Base" && type !== "Leader"
+        );
+      }
+
+      if (sortForFilter) {
+        filteredCards = sortList(filteredCards, sortForFilter);
+      }
+
+      setFilteredList(filteredCards);
       setFetchingCards(false);
-    };
+    },
+    1000
+  );
 
-    fetchFilteredList();
-  }, [debouncedFilter]);
-
-  const apllyFilters = (filters) => {
-    setFilter(filters);
+  const applyFilters = (filters, sort, onlyCards = false) => {
     setFetchingCards(true);
+    setFilter(filters);
+    setSortForFilter(sort);
+    setOnlyCardsFiltered(onlyCards);
+
+    debounced(filters);
   };
 
   const clearFilter = () => {
@@ -81,11 +106,13 @@ export function CardListProvider({ children }) {
     cardCount: cardList.length,
     filteredList,
     filter,
-    apllyFilters,
+    applyFilters,
     clearFilter,
     getCardData,
     possibleFilters,
-    fetchingCards
+    fetchingCards,
+    possibleLeaders,
+    possibleBases
   };
 
   return <CardlistContext.Provider value={value}>{children}</CardlistContext.Provider>;

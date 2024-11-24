@@ -15,8 +15,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { BasePage } from "./BasePage";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { Loading } from "../components/Loading";
 import { CardDialog } from "../components/CardDialog";
@@ -26,7 +26,6 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { DeckEditor } from "../components/DeckEditor";
 import { BottomPanel } from "../components/BottomPanel";
-import { sortList } from "../utils/sortCardList";
 import { uploadDeck } from "../api/decks";
 import { useNavigate } from "react-router-dom";
 
@@ -64,13 +63,14 @@ export function DeckCreatorPage({ deckData }) {
   const renderMedium = useMediaQuery(theme.breakpoints.down("md"));
 
   const {
-    cardList,
     filteredList,
     filter,
     fetchingCards,
-    apllyFilters,
+    applyFilters,
     possibleFilters,
     getCardData,
+    possibleLeaders,
+    possibleBases,
   } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
   const [clickedCard, setClickedCard] = useState(false);
@@ -79,34 +79,60 @@ export function DeckCreatorPage({ deckData }) {
   const [selectedLeader, setSelectedLeader] = useState(null);
   const [selectedBase, setSelectedBase] = useState(null);
   const [deckList, setDeckList] = useState([]);
+  const [deckListCount, setDeckListCount] = useState({});
   const [needToLoadDeck, setNeedToLoadDeck] = useState(!!deckData);
   const navigate = useNavigate();
+  const convertId = (n) => String(n).padStart(3, "0");
 
   useEffect(() => {
-    if (deckData?.leader) {
-      handleSelectLeader(getCardData(deckData.leader.id));
+    if (!possibleFilters?.aspects) {
+      return;
     }
 
-    if (deckData?.base) {
-      handleSelectBase(getCardData(deckData.base.id));
-    }
+    if (deckData?.leader && deckData?.base) {
+      setSelectedLeader(getCardData(deckData.leader.id));
+      setSelectedBase(getCardData(deckData.base.id));
 
-    if (deckData?.list) {
-      setDeckList(
-        deckData.list.map(({ id, count }) => {
-          return {
-            ...getCardData(id),
-            count,
-          };
-        })
+      applyFilters(
+        {
+          ...filter,
+          aspectsStrict: "EXCLUDE",
+          aspects: possibleFilters.aspects.options.filter(
+            (aspect) =>
+              !(
+                getCardData(deckData.leader.id).aspects.includes(aspect) ||
+                getCardData(deckData.base.id).aspects.includes(aspect)
+              )
+          ),
+        },
+        "aspect",
+        true
       );
     }
 
     if (deckData?.name) {
       setDeckName(deckData.name);
     }
-    setNeedToLoadDeck(false);
-  }, [deckData]);
+
+    if (deckData?.list) {
+      setDeckList(
+        deckData.list.map(({ id, count }) => ({
+          ...getCardData(id),
+          count,
+        }))
+      );
+      const tempDeckListCount = {};
+
+      deckData.list.forEach(({ id, count }) => {
+        tempDeckListCount[id] = count;
+      });
+
+      setDeckListCount(tempDeckListCount);
+
+      setExpanded("cards");
+      setNeedToLoadDeck(false);
+    }
+  }, [deckData, possibleFilters]);
 
   const handleExpandAccordion = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -124,17 +150,21 @@ export function DeckCreatorPage({ deckData }) {
     setExpanded(card ? "base" : "leader");
 
     if (selectedBase && card) {
-      apllyFilters({
-        ...filter,
-        aspectsStrict: "EXCLUDE",
-        aspects: possibleFilters.aspects.options.filter(
-          (aspect) =>
-            !(
-              selectedBase.aspects.includes(aspect) ||
-              card.aspects.includes(aspect)
-            )
-        ),
-      });
+      applyFilters(
+        {
+          ...filter,
+          aspectsStrict: "EXCLUDE",
+          aspects: possibleFilters.aspects.options.filter(
+            (aspect) =>
+              !(
+                selectedBase.aspects.includes(aspect) ||
+                card.aspects.includes(aspect)
+              )
+          ),
+        },
+        "aspect",
+        true
+      );
     }
   };
 
@@ -143,21 +173,34 @@ export function DeckCreatorPage({ deckData }) {
     setExpanded(card ? "cards" : "base");
 
     if (selectedLeader && card) {
-      apllyFilters({
-        ...filter,
-        aspectsStrict: "EXCLUDE",
-        aspects: possibleFilters.aspects.options.filter(
-          (aspect) =>
-            !(
-              selectedLeader.aspects.includes(aspect) ||
-              card.aspects.includes(aspect)
-            )
-        ),
-      });
+      applyFilters(
+        {
+          ...filter,
+          aspectsStrict: "EXCLUDE",
+          aspects: possibleFilters.aspects.options.filter(
+            (aspect) =>
+              !(
+                selectedLeader.aspects.includes(aspect) ||
+                card.aspects.includes(aspect)
+              )
+          ),
+        },
+        "aspect",
+        true
+      );
     }
   };
 
   const handleAddCardToDeck = (card) => {
+    const tempDeckListCount = { ...deckListCount };
+    if (tempDeckListCount[card.set + "_" + convertId(card.number)]) {
+      tempDeckListCount[card.set + "_" + convertId(card.number)] += 1;
+    } else {
+      tempDeckListCount[card.set + "_" + convertId(card.number)] = 1;
+    }
+
+    setDeckListCount(tempDeckListCount);
+
     if (deckList.some(({ _id }) => _id === card._id)) {
       setDeckList(
         deckList.map((deckCard) => {
@@ -193,11 +236,17 @@ export function DeckCreatorPage({ deckData }) {
           return deckCard;
         })
     );
+
+    const tempDeckListCount = { ...deckListCount };
+
+    if (tempDeckListCount[card.set + "_" + convertId(card.number)]) {
+      tempDeckListCount[card.set + "_" + convertId(card.number)] -= 1;
+      setDeckListCount(tempDeckListCount);
+    }
   };
 
   const handleSave = async () => {
     const deckToUpload = {};
-    const convertId = (n) => String(n).padStart(3, "0");
     deckToUpload.metadata = {
       name: deckName,
     };
@@ -224,14 +273,11 @@ export function DeckCreatorPage({ deckData }) {
 
   const handleReset = () => {
     setDeckList([]);
+    setDeckListCount({});
     setSelectedBase();
     setSelectedLeader();
     setExpanded("leader");
   };
-
-  useEffect(() => {
-    setCurrentShowing(PAGINATION);
-  }, [filteredList]);
 
   const renderDeckEditor = () => {
     const deckEditor = (
@@ -275,7 +321,6 @@ export function DeckCreatorPage({ deckData }) {
         <SidePanel extraBottom={renderMedium}>
           <CardFilter activeFilters={filter} />
         </SidePanel>
-
         <CardDialog
           cardData={clickedCard}
           handleCloseDialog={handleCloseDialog}
@@ -299,42 +344,39 @@ export function DeckCreatorPage({ deckData }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container>
-                  {sortList(cardList, "aspect")
-                    .filter(({ type }) => type === "Leader")
-                    .map((card, idx) => {
-                      return (
-                        <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
-                          <SWUListCard
-                            key={idx}
-                            data={card}
-                            onClick={() => handleSelectCard(card)}
-                          />
+                  {possibleLeaders.map((card, idx) => {
+                    return (
+                      <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
+                        <SWUListCard
+                          key={idx}
+                          data={card}
+                          onClick={() => handleSelectCard(card)}
+                        />
 
-                          <Styles.AddToDeckControls>
-                            <IconButton
-                              size="small"
-                              disabled={
-                                !selectedLeader ||
-                                card._id !== selectedLeader._id
-                              }
-                              onClick={() => handleSelectLeader()}
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                            <Typography>
-                              {card._id === selectedLeader?._id ? 1 : 0}
-                            </Typography>
-                            <IconButton
-                              size="small"
-                              disabled={!!selectedLeader}
-                              onClick={() => handleSelectLeader(card)}
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </Styles.AddToDeckControls>
-                        </Grid>
-                      );
-                    })}
+                        <Styles.AddToDeckControls>
+                          <IconButton
+                            size="small"
+                            disabled={
+                              !selectedLeader || card._id !== selectedLeader._id
+                            }
+                            onClick={() => handleSelectLeader()}
+                          >
+                            <RemoveIcon />
+                          </IconButton>
+                          <Typography>
+                            {card._id === selectedLeader?._id ? 1 : 0}
+                          </Typography>
+                          <IconButton
+                            size="small"
+                            disabled={!!selectedLeader}
+                            onClick={() => handleSelectLeader(card)}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </Styles.AddToDeckControls>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -354,40 +396,38 @@ export function DeckCreatorPage({ deckData }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container>
-                  {sortList(cardList, "aspect")
-                    .filter(({ type }) => type === "Base")
-                    .map((card, idx) => {
-                      return (
-                        <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
-                          <SWUListCard
-                            key={idx}
-                            data={card}
-                            onClick={() => handleSelectCard(card)}
-                          />
-                          <Styles.AddToDeckControls>
-                            <IconButton
-                              size="small"
-                              disabled={
-                                !selectedBase || card._id !== selectedBase._id
-                              }
-                              onClick={() => handleSelectBase()}
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                            <Typography>
-                              {card._id === selectedBase?._id ? 1 : 0}
-                            </Typography>
-                            <IconButton
-                              size="small"
-                              disabled={!!selectedBase}
-                              onClick={() => handleSelectBase(card)}
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </Styles.AddToDeckControls>
-                        </Grid>
-                      );
-                    })}
+                  {possibleBases.map((card, idx) => {
+                    return (
+                      <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
+                        <SWUListCard
+                          key={idx}
+                          data={card}
+                          onClick={() => handleSelectCard(card)}
+                        />
+                        <Styles.AddToDeckControls>
+                          <IconButton
+                            size="small"
+                            disabled={
+                              !selectedBase || card._id !== selectedBase._id
+                            }
+                            onClick={() => handleSelectBase()}
+                          >
+                            <RemoveIcon />
+                          </IconButton>
+                          <Typography>
+                            {card._id === selectedBase?._id ? 1 : 0}
+                          </Typography>
+                          <IconButton
+                            size="small"
+                            disabled={!!selectedBase}
+                            onClick={() => handleSelectBase(card)}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </Styles.AddToDeckControls>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -427,10 +467,7 @@ export function DeckCreatorPage({ deckData }) {
                       }
                     >
                       <Grid container spacing={0.5} columns={12}>
-                        {sortList(filteredList, "aspect")
-                          .filter(
-                            ({ type }) => type !== "Base" && type !== "Leader"
-                          )
+                        {filteredList
                           .slice(0, currentShowing)
                           .map((card, idx) => {
                             return (
@@ -451,9 +488,9 @@ export function DeckCreatorPage({ deckData }) {
                                     <RemoveIcon />
                                   </IconButton>
                                   <Typography>
-                                    {deckList.filter(
-                                      ({ _id }) => _id === card._id
-                                    )?.[0]?.count || 0}
+                                    {deckListCount[
+                                      card.set + "_" + convertId(card.number)
+                                    ] || 0}
                                   </Typography>
                                   <IconButton
                                     size="small"
