@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  Button,
-  Fab,
-  Grid2 as Grid,
-  Paper,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Button, Fab, Grid2 as Grid, Paper, Typography } from "@mui/material";
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -16,16 +8,19 @@ import { getLatestDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
-import { SWUCardDeckSmallest } from "../components/SWUCardDeckSmallest";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { DeckTile } from "../components/DeckTile";
 
-const PAGINATION = 5;
+const PAGINATION = 20;
 
 const Styles = {
   DeckContainer: styled(Grid)`
     max-width: 1800px;
     width: 100%;
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
   `,
   Deck: styled(Paper)`
     margin: 10px 20px;
@@ -59,15 +54,12 @@ const Styles = {
 
 export function LandingPage() {
   const { isLoggedIn } = useAuth();
-  const theme = useTheme();
   const { getCardData, cardList } = useCardList();
   const navigate = useNavigate();
 
   const [deckLists, setDeckLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
-
-  const renderSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchDeckLists = async () => {
@@ -88,80 +80,16 @@ export function LandingPage() {
 
     const leaderCardData = getCardData(deckList.leader.id);
     const baseCardData = getCardData(deckList.base.id);
-    const listCardData = deckList.list.map(({ id, count }) => ({
-      ...getCardData(id),
-      count,
-    }));
-    const sideboardCardData = deckList.sideboard.map(({ id, count }) => ({
-      ...getCardData(id),
-      count,
-    }));
-
-    const renderDeckDetails = () => {
-      if (renderSmall) {
-        return null;
-      }
-
-      return [
-        <Styles.CardList theme={theme} size={{ md: 6 }} key="list">
-          <Grid container>
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="h4" align="center">
-                List
-              </Typography>
-            </Grid>
-            {listCardData.map((cardData, idx) => (
-              <Grid size={{ xs: 12 }} key={idx}>
-                <SWUCardDeckSmallest
-                  handleSelectCard={() => {}}
-                  data={cardData}
-                  smallest
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Styles.CardList>,
-        <Styles.CardList theme={theme} size={{ md: 3 }} key="sideboard">
-          <Typography variant="h4" align="center">
-            Sideboard
-          </Typography>
-          {sideboardCardData.map((cardData, idx) => (
-            <SWUCardDeckSmallest
-              handleSelectCard={() => {}}
-              data={cardData}
-              key={idx}
-            />
-          ))}
-        </Styles.CardList>,
-      ];
-    };
 
     return (
-      <Styles.Deck key={deckList.title} elevation={24}>
-        <Grid container>
-          <Typography variant="h5">{deckList.title}</Typography>
-          <Grid container>
-            <Grid size={{ xs: 12, md: 3 }} alignContent="center">
-              <Styles.CardImage
-                src={leaderCardData?.frontArt}
-                alt={leaderCardData?.name}
-              />
-              <Styles.CardImage
-                src={baseCardData?.frontArt}
-                alt={baseCardData?.name}
-              />
-              <Styles.DetailsButton
-                variant="contained"
-                onClick={() => navigate("/deck/" + deckList._id)}
-              >
-                View details
-              </Styles.DetailsButton>
-            </Grid>
-
-            {renderDeckDetails()}
-          </Grid>
-        </Grid>
-      </Styles.Deck>
+      <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+        <DeckTile
+          leader={leaderCardData}
+          aspects={[...baseCardData.aspects, ...leaderCardData.aspects]}
+          title={deckList.title}
+          deckId={deckList._id}
+        />
+      </Grid>
     );
   };
 
@@ -204,7 +132,7 @@ export function LandingPage() {
             </p>
           }
         >
-          <Styles.DeckContainer container spacing={0.5}>
+          <Styles.DeckContainer container spacing={2}>
             {deckLists.slice(0, currentShowing).map(createDeckList)}
           </Styles.DeckContainer>
         </InfiniteScroll>

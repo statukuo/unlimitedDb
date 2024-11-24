@@ -8,12 +8,12 @@ const Styles = {
 };
 
 export function AspectIcons({ aspects }) {
-  return aspects.map((aspect) => {
+  return aspects.map((aspect, idx) => {
     return (
       <Styles.Icon
         src={"/Aspects_" + aspect + ".png"}
         alt={aspect}
-        key={aspect}
+        key={aspect + idx}
       />
     );
   });

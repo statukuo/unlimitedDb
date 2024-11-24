@@ -15,3 +15,7 @@ export async function getLatestDecks() {
 export async function uploadDeck(deckListJSON, isPrivate) {
     return (await axios.post('/decks', { deck: JSON.parse(deckListJSON), isPrivate })).data;
 }
+
+export async function deleteDeck(deckId) {
+    return (await axios.delete('/decks/' + deckId)).data;
+}
