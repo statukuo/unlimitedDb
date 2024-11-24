@@ -6,6 +6,7 @@ import {
   Grid2 as Grid,
   Paper,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { BasePage } from "./BasePage";
@@ -17,6 +18,9 @@ import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
 import { SWUCardDeckSmallest } from "../components/SWUCardDeckSmallest";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const PAGINATION = 5;
 
 const Styles = {
   DeckContainer: styled(Grid)`
@@ -61,6 +65,9 @@ export function LandingPage() {
 
   const [userDeckList, setUserDeckList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentShowing, setCurrentShowing] = useState(PAGINATION);
+
+  const renderSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -95,6 +102,45 @@ export function LandingPage() {
       count,
     }));
 
+    const renderDeckDetails = () => {
+      if (renderSmall) {
+        return null;
+      }
+
+      return [
+        <Styles.CardList theme={theme} size={{ md: 6 }} key="list">
+          <Grid container>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="h4" align="center">
+                List
+              </Typography>
+            </Grid>
+            {listCardData.map((cardData, idx) => (
+              <Grid size={{ xs: 12 }} key={idx}>
+                <SWUCardDeckSmallest
+                  handleSelectCard={() => {}}
+                  data={cardData}
+                  smallest
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Styles.CardList>,
+        <Styles.CardList theme={theme} size={{ md: 3 }} key="sideboard">
+          <Typography variant="h4" align="center">
+            Sideboard
+          </Typography>
+          {sideboardCardData.map((cardData, idx) => (
+            <SWUCardDeckSmallest
+              handleSelectCard={() => {}}
+              data={cardData}
+              key={idx}
+            />
+          ))}
+        </Styles.CardList>,
+      ];
+    };
+
     return (
       <Styles.Deck key={deckList.title} elevation={24}>
         <Grid container>
@@ -117,36 +163,7 @@ export function LandingPage() {
               </Styles.DetailsButton>
             </Grid>
 
-            <Styles.CardList theme={theme} size={{ md: 6 }}>
-              <Grid container>
-                <Grid size={{ xs: 12 }}>
-                  <Typography variant="h4" align="center">
-                    List
-                  </Typography>
-                </Grid>
-                {listCardData.map((cardData, idx) => (
-                  <Grid size={{ xs: 12 }} key={idx}>
-                    <SWUCardDeckSmallest
-                      handleSelectCard={() => {}}
-                      data={cardData}
-                      smallest
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Styles.CardList>
-            <Styles.CardList theme={theme} size={{ md: 3 }}>
-              <Typography variant="h4" align="center">
-                Sideboard
-              </Typography>
-              {sideboardCardData.map((cardData, idx) => (
-                <SWUCardDeckSmallest
-                  handleSelectCard={() => {}}
-                  data={cardData}
-                  key={idx}
-                />
-              ))}
-            </Styles.CardList>
+            {renderDeckDetails()}
           </Grid>
         </Grid>
       </Styles.Deck>
@@ -177,9 +194,25 @@ export function LandingPage() {
   return (
     <BasePage>
       <Loading loadCondition={loading}>
-        <Styles.DeckContainer container spacing={0.5}>
-          {userDeckList.map(createDeckList)}
-        </Styles.DeckContainer>
+        <InfiniteScroll
+          dataLength={currentShowing} //This is important field to render the next data
+          next={() =>
+            setCurrentShowing(
+              Math.min(currentShowing + PAGINATION, userDeckList.length)
+            )
+          }
+          hasMore={currentShowing < userDeckList.length}
+          loader={<h4>Loading...</h4>}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          <Styles.DeckContainer container spacing={0.5}>
+            {userDeckList.slice(0, currentShowing).map(createDeckList)}
+          </Styles.DeckContainer>
+        </InfiniteScroll>
         {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
 
         {isLoggedIn ? (

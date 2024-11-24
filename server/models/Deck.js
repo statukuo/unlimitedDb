@@ -23,7 +23,8 @@ const instance = new mongoose.Schema({
   private: { type: Boolean, default: true },
   ownerId: { type: String },
   version: { type: Number, default: 1 },
-  comments: { type: [Comment], default: [] }
+  comments: { type: [Comment], default: [] },
+  description: { type: String, default: "" }
 },
   {
     timestamps: true,
