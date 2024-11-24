@@ -8,6 +8,10 @@ export async function getUserDecks() {
     return (await axios.get('/decks/user')).data;
 }
 
+export async function getLatestDecks() {
+    return (await axios.get('/decks/latest')).data;
+}
+
 export async function uploadDeck(deckListJSON) {
     return (await axios.post('/decks', { deck: JSON.parse(deckListJSON) })).data;
 }

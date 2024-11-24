@@ -3,10 +3,10 @@ import {
   AppBar,
   IconButton,
   Avatar,
-  Popover,
   List,
   ListSubheader,
   ListItemButton,
+  Drawer,
 } from "@mui/material";
 import OnlineIndicator from "./OnlineIndicator";
 import AuthModal from "./AuthModal";
@@ -26,26 +26,28 @@ const Styles = {
     align-items: center !important;
     justify-content: space-between !important;
   `,
+  TopDrawer: styled(Drawer)`
+    width: 100%;
+    max-height: 400px;
+    overflow: auto;
+  `,
 };
 
 export default function Header() {
   const { isLoggedIn, account, logout } = useAuth();
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const [popover, setPopover] = useState(false);
   const [authModal, setAuthModal] = useState(false);
   const [register, setRegister] = useState(false);
 
   const navigate = useNavigate();
 
-  const openPopover = (e) => {
+  const openPopover = () => {
     setPopover(true);
-    setAnchorEl(e.currentTarget);
   };
 
   const closePopover = () => {
     setPopover(false);
-    setAnchorEl(null);
   };
 
   const clickCollection = () => {
@@ -70,18 +72,19 @@ export default function Header() {
         </OnlineIndicator>
       </IconButton>
 
-      <Popover
-        anchorEl={anchorEl}
-        open={popover}
-        onClose={closePopover}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-      >
+      <Styles.TopDrawer anchor="top" open={popover} onClose={closePopover}>
         <List style={{ minWidth: "100px" }}>
           <ListSubheader style={{ textAlign: "center" }}>
             Hello, {isLoggedIn ? account.username : "Guest"}
           </ListSubheader>
-          <ListItemButton onClick={() => navigate("/")}>Home</ListItemButton>
+          <ListItemButton onClick={() => navigate("/")}>
+            Hot decks
+          </ListItemButton>
+          {isLoggedIn ? (
+            <ListItemButton onClick={() => navigate("/your/decks")}>
+              Your decks
+            </ListItemButton>
+          ) : null}
 
           <ListItemButton onClick={() => navigate("/cards")}>
             Cards
@@ -101,7 +104,7 @@ export default function Header() {
             </Fragment>
           )}
         </List>
-      </Popover>
+      </Styles.TopDrawer>
 
       <AuthModal
         open={authModal}

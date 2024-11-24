@@ -12,7 +12,7 @@ import {
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
-import { getLatestDecks } from "../api/decks";
+import { getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
@@ -57,25 +57,30 @@ const Styles = {
   `,
 };
 
-export function LandingPage() {
+export function YourDecksPage() {
   const { isLoggedIn } = useAuth();
   const theme = useTheme();
   const { getCardData, cardList } = useCardList();
   const navigate = useNavigate();
 
-  const [deckLists, setDeckLists] = useState([]);
+  const [userDeckList, setUserDeckList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
 
   const renderSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    const fetchDeckLists = async () => {
-      setDeckLists(await getLatestDecks());
+    if (!isLoggedIn) {
+      setUserDeckList([]);
+      return;
+    }
+
+    const fetchUserDeckList = async () => {
+      setUserDeckList(await getUserDecks());
     };
 
-    fetchDeckLists();
-  }, []);
+    fetchUserDeckList();
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setLoading(!cardList.length);
@@ -193,10 +198,10 @@ export function LandingPage() {
           dataLength={currentShowing} //This is important field to render the next data
           next={() =>
             setCurrentShowing(
-              Math.min(currentShowing + PAGINATION, deckLists.length)
+              Math.min(currentShowing + PAGINATION, userDeckList.length)
             )
           }
-          hasMore={currentShowing < deckLists.length}
+          hasMore={currentShowing < userDeckList.length}
           loader={<h4>Loading...</h4>}
           endMessage={
             <p style={{ textAlign: "center" }}>
@@ -205,7 +210,7 @@ export function LandingPage() {
           }
         >
           <Styles.DeckContainer container spacing={0.5}>
-            {deckLists.slice(0, currentShowing).map(createDeckList)}
+            {userDeckList.slice(0, currentShowing).map(createDeckList)}
           </Styles.DeckContainer>
         </InfiniteScroll>
         {isLoggedIn ? <DeckUploader /> : notLoggedInMessage()}
