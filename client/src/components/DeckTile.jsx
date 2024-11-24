@@ -1,8 +1,9 @@
-import { Paper, Typography } from "@mui/material";
+import { Fab, Paper, Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { AspectIcons } from "./AspectIcons";
 import { useNavigate } from "react-router-dom";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Styles = {
   Tile: styled(Paper)`
@@ -39,10 +40,44 @@ const Styles = {
     padding-left: 10px;
     padding-right: 10px;
   `,
+  DeleteIcon: styled(Fab)`
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 0;
+  `,
 };
 
-export function DeckTile({ leader, aspects, title, deckId }) {
+export function DeckTile({
+  leader,
+  aspects,
+  title,
+  deckId,
+  deleteEnabled,
+  handleOpenDeleteDialog,
+}) {
   const navigate = useNavigate();
+
+  const onDelete = (event) => {
+    event.stopPropagation();
+    handleOpenDeleteDialog(title, deckId);
+  };
+
+  const renderDeleteIcon = () => {
+    if (!deleteEnabled) {
+      return;
+    }
+
+    return (
+      <Styles.DeleteIcon color="error" onClick={onDelete}>
+        <DeleteForeverIcon />
+      </Styles.DeleteIcon>
+    );
+  };
 
   return (
     <Styles.Tile elevantion={24} onClick={() => navigate("/deck/" + deckId)}>
@@ -50,7 +85,7 @@ export function DeckTile({ leader, aspects, title, deckId }) {
       <Styles.Icons>
         <AspectIcons aspects={aspects}></AspectIcons>
       </Styles.Icons>
-
+      {renderDeleteIcon()}
       <Styles.Title variant="h5">{title}</Styles.Title>
     </Styles.Tile>
   );

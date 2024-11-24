@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Fab, Grid2 as Grid, Paper } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Fab,
+  Grid2 as Grid,
+  Paper,
+} from "@mui/material";
 import { BasePage } from "./BasePage";
 import { useCardList } from "../contexts/CardContext";
 import { useAuth } from "../contexts/AuthContext";
-import { getUserDecks } from "../api/decks";
+import { deleteDeck, getUserDecks } from "../api/decks";
 import { DeckUploader } from "../components/DeckUploader";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
@@ -60,6 +70,12 @@ export function YourDecksPage() {
   const [userDeckList, setUserDeckList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deckToDelete, setDeckToDelete] = useState();
+
+  const fetchUserDeckList = async () => {
+    setUserDeckList(await getUserDecks());
+  };
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -67,16 +83,28 @@ export function YourDecksPage() {
       return;
     }
 
-    const fetchUserDeckList = async () => {
-      setUserDeckList(await getUserDecks());
-    };
-
     fetchUserDeckList();
   }, [isLoggedIn]);
 
   useEffect(() => {
     setLoading(!cardList.length);
   }, [cardList]);
+
+  const handleOpenDeleteDialog = (title, deckId) => {
+    setDeleteDialogOpen(true);
+    setDeckToDelete({ title, _id: deckId });
+  };
+
+  const handleClose = () => {
+    setDeleteDialogOpen(false);
+    setDeckToDelete();
+  };
+
+  const handleDeleteDeck = async () => {
+    await deleteDeck(deckToDelete._id);
+    handleClose();
+    fetchUserDeckList();
+  };
 
   const createDeckList = (deckList) => {
     if (loading) {
@@ -93,6 +121,8 @@ export function YourDecksPage() {
           aspects={[...baseCardData.aspects, ...leaderCardData.aspects]}
           title={deckList.title}
           deckId={deckList._id}
+          deleteEnabled={true}
+          handleOpenDeleteDialog={handleOpenDeleteDialog}
         />
       </Grid>
     );
@@ -101,6 +131,27 @@ export function YourDecksPage() {
   return (
     <BasePage>
       <Loading loadCondition={loading}>
+        <Dialog
+          open={deleteDialogOpen}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>
+            {"Are you sure do you want to delete this deck?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Deleting this deck will remove any possibility to have it back.
+              Once "{deckToDelete?.title}" is deleted, is gone forever.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleDeleteDeck}>Delete</Button>
+          </DialogActions>
+        </Dialog>
+
         <InfiniteScroll
           dataLength={currentShowing} //This is important field to render the next data
           next={() =>
