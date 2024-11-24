@@ -11,13 +11,13 @@ const Styles = {
 };
 
 export function TextFilter({ activeFilters, filterId }) {
-  const { apllyFilters, possibleFilters } = useCardList();
+  const { applyFilters, possibleFilters } = useCardList();
 
   const handleChange = (event) => {
     const filtersToUpdate = {};
     filtersToUpdate[filterId] = event.target.value;
 
-    apllyFilters({
+    applyFilters({
       ...activeFilters,
       ...filtersToUpdate,
     });

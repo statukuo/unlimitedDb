@@ -17,13 +17,13 @@ const Styles = {
 };
 
 export function NumericFilter({ activeFilters, filterId }) {
-  const { apllyFilters, possibleFilters } = useCardList();
+  const { applyFilters, possibleFilters } = useCardList();
   const createNumberticStrictFilter = () => {
     const handleChange = (event) => {
       const filtersToUpdate = {};
       filtersToUpdate[filterId + "Strict"] = event.target.value;
 
-      apllyFilters({
+      applyFilters({
         ...activeFilters,
         ...filtersToUpdate,
       });
@@ -46,7 +46,7 @@ export function NumericFilter({ activeFilters, filterId }) {
     const filtersToUpdate = {};
     filtersToUpdate[filterId] = event.target.value;
 
-    apllyFilters({
+    applyFilters({
       ...activeFilters,
       ...filtersToUpdate,
     });
