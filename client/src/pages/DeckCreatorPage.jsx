@@ -81,6 +81,7 @@ export function DeckCreatorPage({ deckData }) {
   const [deckList, setDeckList] = useState([]);
   const [deckListCount, setDeckListCount] = useState({});
   const [needToLoadDeck, setNeedToLoadDeck] = useState(!!deckData);
+  const [isPrivate, setIsPrivate] = useState(true);
   const navigate = useNavigate();
   const convertId = (n) => String(n).padStart(3, "0");
 
@@ -113,6 +114,8 @@ export function DeckCreatorPage({ deckData }) {
     if (deckData?.name) {
       setDeckName(deckData.name);
     }
+
+    setIsPrivate(!!deckData?.private);
 
     if (deckData?.list) {
       setDeckList(
@@ -247,6 +250,11 @@ export function DeckCreatorPage({ deckData }) {
 
   const handleSave = async () => {
     const deckToUpload = {};
+
+    if (deckData._id) {
+      deckToUpload._id = deckData._id;
+    }
+
     deckToUpload.metadata = {
       name: deckName,
     };
@@ -266,7 +274,7 @@ export function DeckCreatorPage({ deckData }) {
       };
     });
 
-    const res = await uploadDeck(JSON.stringify(deckToUpload));
+    const res = await uploadDeck(JSON.stringify(deckToUpload), isPrivate);
 
     navigate("/deck/" + res._id);
   };
@@ -282,10 +290,12 @@ export function DeckCreatorPage({ deckData }) {
   const renderDeckEditor = () => {
     const deckEditor = (
       <DeckEditor
+        isPrivate={isPrivate}
         selectedLeader={selectedLeader}
         deckName={deckName}
         deckList={deckList}
         selectedBase={selectedBase}
+        handleSetPrivate={setIsPrivate}
         handleDeckNameChange={setDeckName}
         handleAddCardToDeck={handleAddCardToDeck}
         handleRemoveFromDeck={handleRemoveFromDeck}

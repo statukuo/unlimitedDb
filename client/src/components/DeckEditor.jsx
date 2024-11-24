@@ -1,4 +1,11 @@
-import { Button, Grid2 as Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Grid2 as Grid,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { ContentRowWithDivider } from "./RowDivider";
@@ -17,10 +24,12 @@ const Styles = {
 };
 
 export function DeckEditor({
+  isPrivate,
   deckName,
   selectedLeader,
   deckList,
   selectedBase,
+  handleSetPrivate,
   handleDeckNameChange,
   handleAddCardToDeck,
   handleRemoveFromDeck,
@@ -90,6 +99,18 @@ export function DeckEditor({
         </Grid>
       </ContentRowWithDivider>
       <Grid container size={12}>
+        <Styles.ButtonHolder size={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPrivate}
+                onChange={() => handleSetPrivate(!isPrivate)}
+                name="Private"
+              />
+            }
+            label="Private"
+          />
+        </Styles.ButtonHolder>
         <Styles.ButtonHolder size={6}>
           <Button
             variant="outlined"

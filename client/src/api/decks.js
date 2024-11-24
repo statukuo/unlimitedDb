@@ -12,6 +12,6 @@ export async function getLatestDecks() {
     return (await axios.get('/decks/latest')).data;
 }
 
-export async function uploadDeck(deckListJSON) {
-    return (await axios.post('/decks', { deck: JSON.parse(deckListJSON) })).data;
+export async function uploadDeck(deckListJSON, isPrivate) {
+    return (await axios.post('/decks', { deck: JSON.parse(deckListJSON), isPrivate })).data;
 }
