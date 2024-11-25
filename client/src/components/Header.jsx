@@ -28,7 +28,7 @@ const Styles = {
   `,
   TopDrawer: styled(Drawer)`
     width: 100%;
-    max-height: 400px;
+    max-height: 400px !important;
     overflow: auto;
   `,
 };

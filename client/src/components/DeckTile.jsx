@@ -49,6 +49,7 @@ const Styles = {
     border-top-left-radius: 0;
     border-top-right-radius: 12px;
     border-bottom-right-radius: 0;
+    z-index: 1;
   `,
 };
 

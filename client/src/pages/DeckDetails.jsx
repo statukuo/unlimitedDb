@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   ButtonGroup,
-  Fab,
   FormControl,
   Grid2 as Grid,
   InputLabel,
@@ -12,7 +11,7 @@ import {
 } from "@mui/material";
 import { BasePage } from "./BasePage";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getDeck } from "../api/decks";
 import { useCardList } from "../contexts/CardContext";
 import { Loading } from "../components/Loading";
@@ -21,8 +20,6 @@ import { AspectIcons } from "../components/AspectIcons";
 import { CardDialog } from "../components/CardDialog";
 import { SWUCardDeck } from "../components/SWUCardDeck";
 import { sortList } from "../utils/sortCardList";
-import { useAuth } from "../contexts/AuthContext";
-import EditNoteIcon from "@mui/icons-material/EditNote";
 
 const Styles = {
   ButtonGroup: styled(ButtonGroup)`
@@ -47,21 +44,11 @@ const Styles = {
     margin-top: 10px;
     flex-direction: column;
   `,
-  EditButton: styled(Fab)`
-    position: fixed;
-    bottom: 50px;
-    right: 0;
-    width: 70px;
-    border-radius: 25px 0 0 25px;
-    z-index: 50;
-  `,
 };
 
 export function DeckDetails() {
   const { deckId } = useParams();
   const { getCardData, cardList } = useCardList();
-  const { account } = useAuth();
-  const navigate = useNavigate();
   const [deckData, setDeckData] = useState({});
   const [leader, setLeader] = useState({});
   const [base, setBase] = useState({});
@@ -139,14 +126,6 @@ export function DeckDetails() {
 
   return (
     <BasePage>
-      {account?._id === deckData?.ownerId ? (
-        <Styles.EditButton
-          color="success"
-          onClick={() => navigate("/deck/edit/" + deckId)}
-        >
-          <EditNoteIcon />
-        </Styles.EditButton>
-      ) : null}
       <CardDialog
         cardData={clickedCard}
         handleCloseDialog={handleCloseDialog}
