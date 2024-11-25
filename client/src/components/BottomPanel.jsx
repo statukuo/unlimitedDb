@@ -5,6 +5,14 @@ import styled from "styled-components";
 
 const PULLER_SIZE = 60;
 const Styles = {
+  BottomDrawer: styled(SwipeableDrawer)`
+    height: 100%;
+    overflow: visible;
+    > .MuiPaper-root {
+      height: 100%;
+      overflow: visible;
+    }
+  `,
   PullerText: styled(Box)`
     position: absolute;
     top: -${PULLER_SIZE}px;
@@ -39,7 +47,7 @@ export function BottomPanel({ children, title }) {
 
   return (
     <div>
-      <SwipeableDrawer
+      <Styles.BottomDrawer
         anchor="bottom"
         open={openPanel}
         onClose={() => setOpenPanel(false)}
@@ -58,7 +66,7 @@ export function BottomPanel({ children, title }) {
         <Styles.Content sx={{ px: 2, pb: 2, height: "100%", overflow: "auto" }}>
           {children}
         </Styles.Content>
-      </SwipeableDrawer>
+      </Styles.BottomDrawer>
     </div>
   );
 }
