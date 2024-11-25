@@ -173,8 +173,8 @@ export function DeckDetails() {
           <ContentRowWithDivider>
             <Grid size={{ xs: 10 }} offset={{ xs: 1 }}>
               <LikeAndCommentCounter
-                likes={deckData.likeCount.length}
-                comments={deckData.comments.length}
+                likes={deckData.likeCount?.length || 0}
+                comments={deckData.comments?.length || 0}
               />
             </Grid>
           </ContentRowWithDivider>
