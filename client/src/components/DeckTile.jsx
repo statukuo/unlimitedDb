@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { AspectIcons } from "./AspectIcons";
 import { useNavigate } from "react-router-dom";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { LikeAndCommentCounter } from "./LikeAndCommentCounters";
 
 const Styles = {
   Tile: styled(Paper)`
@@ -19,9 +20,16 @@ const Styles = {
   `,
   Icons: styled.div`
     position: relative;
-    display: grid;
-    width: 150px;
+    display: block;
+    width: 170px;
+    height: 150px;
     background-image: linear-gradient(to right, black, rgba(255, 255, 255, 0));
+    padding-left: 10px;
+    padding-top: 10px;
+    img {
+      width: 40px;
+      height: 40px;
+    }
   `,
   Title: styled(Typography)`
     width: 100%;
@@ -51,9 +59,16 @@ const Styles = {
     border-bottom-right-radius: 0;
     z-index: 1;
   `,
+  Counters: styled.div`
+    position: absolute;
+    top: 110px;
+    color: white;
+  `,
 };
 
 export function DeckTile({
+  likeCount,
+  commentCount,
   leader,
   aspects,
   title,
@@ -87,6 +102,9 @@ export function DeckTile({
         <AspectIcons aspects={aspects}></AspectIcons>
       </Styles.Icons>
       {renderDeleteIcon()}
+      <Styles.Counters>
+        <LikeAndCommentCounter likes={likeCount} comments={commentCount} />
+      </Styles.Counters>
       <Styles.Title variant="h5">{title}</Styles.Title>
     </Styles.Tile>
   );
