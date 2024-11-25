@@ -23,6 +23,7 @@ import { SWUCardDeck } from "../components/SWUCardDeck";
 import { sortList } from "../utils/sortCardList";
 import { useAuth } from "../contexts/AuthContext";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { LikeAndCommentCounter } from "../components/LikeAndCommentCounters";
 
 const Styles = {
   ButtonGroup: styled(ButtonGroup)`
@@ -166,6 +167,15 @@ export function DeckDetails() {
                 </div>
                 {deckData.title}
               </Styles.Title>
+            </Grid>
+          </ContentRowWithDivider>
+
+          <ContentRowWithDivider>
+            <Grid size={{ xs: 10 }} offset={{ xs: 1 }}>
+              <LikeAndCommentCounter
+                likes={deckData.likeCount.length}
+                comments={deckData.comments.length}
+              />
             </Grid>
           </ContentRowWithDivider>
           <ContentRowWithDivider>

@@ -117,6 +117,8 @@ export function YourDecksPage() {
     return (
       <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
         <DeckTile
+          likeCount={deckList.likeCount.length}
+          commentCount={deckList.comments.length}
           leader={leaderCardData}
           aspects={[...baseCardData.aspects, ...leaderCardData.aspects]}
           title={deckList.title}

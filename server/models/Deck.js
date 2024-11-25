@@ -19,7 +19,7 @@ const instance = new mongoose.Schema({
   list: { type: [Card] },
   sideboard: { type: [Card] },
   viewCount: { type: Number, default: 0 },
-  likeCount: { type: Number, deafault: 0 },
+  likeCount: { type: [String], deafault: [] },
   private: { type: Boolean, default: true },
   ownerId: { type: String },
   version: { type: Number, default: 1 },
