@@ -6,13 +6,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ContentRowWithDivider } from "./RowDivider";
 import { SWUListCard } from "./SWUListCard";
 import { SWUCardDeckSmall } from "./SWUCardDeckSmall";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import { sortList } from "../utils/sortCardList";
+import { SortSelect } from "./SortSelect";
 
 const Styles = {
   ButtonHolder: styled(Grid)`
@@ -37,6 +39,8 @@ export function DeckEditor({
   handleSave,
   handleReset,
 }) {
+  const [sortMethod, setSortMethod] = useState("cost");
+
   return (
     <Grid container>
       <ContentRowWithDivider>
@@ -79,11 +83,24 @@ export function DeckEditor({
       </ContentRowWithDivider>
       <ContentRowWithDivider>
         <Grid size={12}>
-          <Typography variant="h6" sx={{ m: 2 }}>
-            Deck
-          </Typography>
+          <Grid container alignItems="center" margin={2}>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Typography variant="h6" align="center">
+                Deck (
+                {deckList.reduce((acc, current) => (acc += current.count), 0)}/
+                50)
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <SortSelect
+                sortMethod={sortMethod}
+                setSortMethod={setSortMethod}
+              />
+            </Grid>
+          </Grid>
+
           {deckList.length ? (
-            deckList.map((card, idx) => (
+            sortList(deckList, sortMethod).map((card, idx) => (
               <SWUCardDeckSmall
                 handleSelectCard={() => handleSelectCard(card)}
                 data={card}

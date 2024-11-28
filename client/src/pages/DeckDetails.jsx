@@ -2,12 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   ButtonGroup,
   Fab,
-  FormControl,
   Grid2 as Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Tab,
   Tabs,
   Typography,
@@ -28,6 +24,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import { LikeAndCommentCounter } from "../components/LikeAndCommentCounters";
 import { TabPanel } from "../components/TabPanel";
 import { DeckMaths } from "../components/DeckMaths";
+import { SortSelect } from "../components/SortSelect";
 
 const Styles = {
   ButtonGroup: styled(ButtonGroup)`
@@ -218,20 +215,10 @@ export function DeckDetails() {
                 </Typography>
               </Grid>
               <Grid size={{ xs: 4, md: 2 }} offset={{ xs: 0, md: 1 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Sort Method</InputLabel>
-                  <Select
-                    value={sortMethod}
-                    label="Sort method"
-                    onChange={(event) => setSortMethod(event.target.value)}
-                  >
-                    <MenuItem value={"cost"}>Cost</MenuItem>
-                    <MenuItem value={"aspect"}>Aspect</MenuItem>
-                    <MenuItem value={"set"}>Set</MenuItem>
-                    <MenuItem value={"type"}>Type</MenuItem>
-                    <MenuItem value={"rarity"}>Rarity</MenuItem>
-                  </Select>
-                </FormControl>
+                <SortSelect
+                  sortMethod={sortMethod}
+                  setSortMethod={setSortMethod}
+                />
               </Grid>
             </ContentRowWithDivider>
             <ContentRowWithDivider>
