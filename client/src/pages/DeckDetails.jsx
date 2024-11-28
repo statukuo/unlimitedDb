@@ -8,6 +8,8 @@ import {
   MenuItem,
   Paper,
   Select,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
 import { BasePage } from "./BasePage";
@@ -24,6 +26,8 @@ import { sortList } from "../utils/sortCardList";
 import { useAuth } from "../contexts/AuthContext";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { LikeAndCommentCounter } from "../components/LikeAndCommentCounters";
+import { TabPanel } from "../components/TabPanel";
+import { DeckMaths } from "../components/DeckMaths";
 
 const Styles = {
   ButtonGroup: styled(ButtonGroup)`
@@ -72,6 +76,7 @@ export function DeckDetails() {
   const [loading, setLoading] = useState(true);
   const [sortMethod, setSortMethod] = useState("cost");
   const [clickedCard, setClickedCard] = useState(false);
+  const [activeTab, setActiveTab] = React.useState(0);
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -191,56 +196,76 @@ export function DeckDetails() {
             </Grid>
           </ContentRowWithDivider>
           <ContentRowWithDivider>
-            <Grid size={{ xs: 5 }} offset={{ xs: 2, md: 3 }}>
-              <Typography align="center">
-                Deck ({list.reduce((acc, currnet) => acc + currnet.count, 0)} /
-                50)
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 4, md: 2 }} offset={{ xs: 0, md: 1 }}>
-              <FormControl fullWidth>
-                <InputLabel>Sort Method</InputLabel>
-                <Select
-                  value={sortMethod}
-                  label="Sort method"
-                  onChange={(event) => setSortMethod(event.target.value)}
-                >
-                  <MenuItem value={"cost"}>Cost</MenuItem>
-                  <MenuItem value={"aspect"}>Aspect</MenuItem>
-                  <MenuItem value={"set"}>Set</MenuItem>
-                  <MenuItem value={"type"}>Type</MenuItem>
-                  <MenuItem value={"rarity"}>Rarity</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid size={{ xs: 12 }}>
+              <Tabs
+                value={activeTab}
+                onChange={(_, nextValue) => setActiveTab(nextValue)}
+                aria-label="basic tabs example"
+                centered
+              >
+                <Tab label="Cards" />
+                <Tab label="Maths" />
+              </Tabs>
             </Grid>
           </ContentRowWithDivider>
-          <ContentRowWithDivider>
-            {list.map((card, idx) => (
-              <SWUCardDeck
-                handleSelectCard={handleSelectCard}
-                data={card}
-                key={idx}
-              />
-            ))}
-          </ContentRowWithDivider>
-          <ContentRowWithDivider>
-            <Grid size={{ xs: 10 }} offset={{ xs: 1 }}>
-              <Typography align="center">
-                Sideboard (
-                {sideboard.reduce((acc, currnet) => acc + currnet.count, 0)} /
-                10)
-              </Typography>
-            </Grid>
-          </ContentRowWithDivider>
-          <ContentRowWithDivider>
-            {sideboard.map((card, idx) => (
-              <SWUCardDeck
-                handleSelectCard={handleSelectCard}
-                data={card}
-                key={idx}
-              />
-            ))}
-          </ContentRowWithDivider>
+
+          <TabPanel value={activeTab} index={0}>
+            <ContentRowWithDivider>
+              <Grid size={{ xs: 5 }} offset={{ xs: 2, md: 3 }}>
+                <Typography align="center">
+                  Deck ({list.reduce((acc, currnet) => acc + currnet.count, 0)}{" "}
+                  / 50)
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 4, md: 2 }} offset={{ xs: 0, md: 1 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Sort Method</InputLabel>
+                  <Select
+                    value={sortMethod}
+                    label="Sort method"
+                    onChange={(event) => setSortMethod(event.target.value)}
+                  >
+                    <MenuItem value={"cost"}>Cost</MenuItem>
+                    <MenuItem value={"aspect"}>Aspect</MenuItem>
+                    <MenuItem value={"set"}>Set</MenuItem>
+                    <MenuItem value={"type"}>Type</MenuItem>
+                    <MenuItem value={"rarity"}>Rarity</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
+              {list.map((card, idx) => (
+                <SWUCardDeck
+                  handleSelectCard={handleSelectCard}
+                  data={card}
+                  key={idx}
+                />
+              ))}
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
+              <Grid size={{ xs: 10 }} offset={{ xs: 1 }}>
+                <Typography align="center">
+                  Sideboard (
+                  {sideboard.reduce((acc, currnet) => acc + currnet.count, 0)} /
+                  10)
+                </Typography>
+              </Grid>
+            </ContentRowWithDivider>
+            <ContentRowWithDivider>
+              {sideboard.map((card, idx) => (
+                <SWUCardDeck
+                  handleSelectCard={handleSelectCard}
+                  data={card}
+                  key={idx}
+                />
+              ))}
+            </ContentRowWithDivider>
+          </TabPanel>
+
+          <TabPanel value={activeTab} index={1}>
+            <DeckMaths deckList={list} />
+          </TabPanel>
         </Grid>
       </Loading>
     </BasePage>
