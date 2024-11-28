@@ -11,6 +11,8 @@ import {
   Grid2 as Grid,
   IconButton,
   Paper,
+  Tab,
+  Tabs,
   Typography,
   useMediaQuery,
   useTheme,
@@ -28,6 +30,8 @@ import { DeckEditor } from "../components/DeckEditor";
 import { BottomPanel } from "../components/BottomPanel";
 import { uploadDeck } from "../api/decks";
 import { useNavigate } from "react-router-dom";
+import { TabPanel } from "../components/TabPanel";
+import { DeckMaths } from "../components/DeckMaths";
 
 const PAGINATION = 36;
 const ACCORDION_SPEED = 500;
@@ -38,6 +42,7 @@ const Styles = {
     ${(props) => props.theme.breakpoints.down("md")} {
       margin-top: 10px;
     }
+    margin-bottom: 100px;
   `,
   DeckContiner: styled(Grid)`
     padding-left: 10px;
@@ -63,14 +68,15 @@ export function DeckCreatorPage({ deckData }) {
   const renderMedium = useMediaQuery(theme.breakpoints.down("md"));
 
   const {
-    filteredList,
     filter,
     fetchingCards,
     applyFilters,
     possibleFilters,
     getCardData,
-    possibleLeaders,
-    possibleBases,
+    filteredLeaders,
+    filteredBases,
+    filteredCards,
+    cardList,
   } = useCardList();
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
   const [clickedCard, setClickedCard] = useState(false);
@@ -82,11 +88,12 @@ export function DeckCreatorPage({ deckData }) {
   const [deckListCount, setDeckListCount] = useState({});
   const [needToLoadDeck, setNeedToLoadDeck] = useState(!!deckData);
   const [isPrivate, setIsPrivate] = useState(true);
+  const [activeTab, setActiveTab] = React.useState(0);
   const navigate = useNavigate();
   const convertId = (n) => String(n).padStart(3, "0");
 
   useEffect(() => {
-    if (!possibleFilters?.aspects) {
+    if (!possibleFilters.aspects || !cardList.length) {
       return;
     }
 
@@ -106,8 +113,7 @@ export function DeckCreatorPage({ deckData }) {
               )
           ),
         },
-        "aspect",
-        true
+        "aspect"
       );
     }
 
@@ -135,7 +141,7 @@ export function DeckCreatorPage({ deckData }) {
       setExpanded("cards");
       setNeedToLoadDeck(false);
     }
-  }, [deckData, possibleFilters]);
+  }, [deckData, possibleFilters, cardList]);
 
   const handleExpandAccordion = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -251,7 +257,7 @@ export function DeckCreatorPage({ deckData }) {
   const handleSave = async () => {
     const deckToUpload = {};
 
-    if (deckData._id) {
+    if (deckData?._id) {
       deckToUpload._id = deckData._id;
     }
 
@@ -329,7 +335,7 @@ export function DeckCreatorPage({ deckData }) {
     <BasePage>
       <Loading loadCondition={(deckData && fetchingCards) || needToLoadDeck}>
         <SidePanel extraBottom={renderMedium}>
-          <CardFilter activeFilters={filter} />
+          <CardFilter activeFilters={filter} onlyCards={true} />
         </SidePanel>
         <CardDialog
           cardData={clickedCard}
@@ -338,186 +344,202 @@ export function DeckCreatorPage({ deckData }) {
 
         <Styles.CardContainer container spacing={2} theme={theme}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <Accordion
-              expanded={expanded === "leader"}
-              onChange={handleExpandAccordion("leader")}
-              TransitionProps={{
-                timeout: ACCORDION_SPEED,
-              }}
+            <Tabs
+              value={activeTab}
+              onChange={(_, nextValue) => setActiveTab(nextValue)}
+              aria-label="basic tabs example"
+              centered
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="leader-content"
-                id="leader-header"
-              >
-                Leader
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container>
-                  {possibleLeaders.map((card, idx) => {
-                    return (
-                      <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
-                        <SWUListCard
-                          key={idx}
-                          data={card}
-                          onClick={() => handleSelectCard(card)}
-                        />
+              <Tab label="Cards" />
+              <Tab label="Maths" />
+            </Tabs>
 
-                        <Styles.AddToDeckControls>
-                          <IconButton
-                            size="small"
-                            disabled={
-                              !selectedLeader || card._id !== selectedLeader._id
-                            }
-                            onClick={() => handleSelectLeader()}
-                          >
-                            <RemoveIcon />
-                          </IconButton>
-                          <Typography>
-                            {card._id === selectedLeader?._id ? 1 : 0}
-                          </Typography>
-                          <IconButton
-                            size="small"
-                            disabled={!!selectedLeader}
-                            onClick={() => handleSelectLeader(card)}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </Styles.AddToDeckControls>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === "base"}
-              onChange={handleExpandAccordion("base")}
-              TransitionProps={{
-                timeout: ACCORDION_SPEED,
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="base-content"
-                id="base-header"
+            <TabPanel value={activeTab} index={0}>
+              <Accordion
+                expanded={expanded === "leader"}
+                onChange={handleExpandAccordion("leader")}
+                TransitionProps={{
+                  timeout: ACCORDION_SPEED,
+                }}
               >
-                Base
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container>
-                  {possibleBases.map((card, idx) => {
-                    return (
-                      <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
-                        <SWUListCard
-                          key={idx}
-                          data={card}
-                          onClick={() => handleSelectCard(card)}
-                        />
-                        <Styles.AddToDeckControls>
-                          <IconButton
-                            size="small"
-                            disabled={
-                              !selectedBase || card._id !== selectedBase._id
-                            }
-                            onClick={() => handleSelectBase()}
-                          >
-                            <RemoveIcon />
-                          </IconButton>
-                          <Typography>
-                            {card._id === selectedBase?._id ? 1 : 0}
-                          </Typography>
-                          <IconButton
-                            size="small"
-                            disabled={!!selectedBase}
-                            onClick={() => handleSelectBase(card)}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </Styles.AddToDeckControls>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={expanded === "cards"}
-              onChange={handleExpandAccordion("cards")}
-              TransitionProps={{
-                timeout: ACCORDION_SPEED,
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="card-content"
-                id="cards-header"
-              >
-                Cards
-              </AccordionSummary>
-              <AccordionDetails>
-                <Loading loadCondition={fetchingCards}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="leader-content"
+                  id="leader-header"
+                >
+                  Leader
+                </AccordionSummary>
+                <AccordionDetails>
                   <Grid container>
-                    <InfiniteScroll
-                      dataLength={currentShowing} //This is important field to render the next data
-                      next={() =>
-                        setCurrentShowing(
-                          Math.min(
-                            currentShowing + PAGINATION,
-                            filteredList.length
-                          )
-                        )
-                      }
-                      hasMore={currentShowing < filteredList.length}
-                      loader={<h4>Loading...</h4>}
-                      endMessage={
-                        <p style={{ textAlign: "center" }}>
-                          <b>Yay! You have seen it all</b>
-                        </p>
-                      }
-                    >
-                      <Grid container spacing={0.5} columns={12}>
-                        {filteredList
-                          .slice(0, currentShowing)
-                          .map((card, idx) => {
-                            return (
-                              <Grid
-                                size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
-                                key={idx}
-                              >
-                                <SWUListCard
-                                  key={idx}
-                                  data={card}
-                                  onClick={() => handleSelectCard(card)}
-                                />
-                                <Styles.AddToDeckControls>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => handleRemoveFromDeck(card)}
-                                  >
-                                    <RemoveIcon />
-                                  </IconButton>
-                                  <Typography>
-                                    {deckListCount[
-                                      card.set + "_" + convertId(card.number)
-                                    ] || 0}
-                                  </Typography>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => handleAddCardToDeck(card)}
-                                  >
-                                    <AddIcon />
-                                  </IconButton>
-                                </Styles.AddToDeckControls>
-                              </Grid>
-                            );
-                          })}
-                      </Grid>
-                    </InfiniteScroll>
+                    {filteredLeaders.map((card, idx) => {
+                      return (
+                        <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
+                          <SWUListCard
+                            key={idx}
+                            data={card}
+                            onClick={() => handleSelectCard(card)}
+                          />
+
+                          <Styles.AddToDeckControls>
+                            <IconButton
+                              size="small"
+                              disabled={
+                                !selectedLeader ||
+                                card._id !== selectedLeader._id
+                              }
+                              onClick={() => handleSelectLeader()}
+                            >
+                              <RemoveIcon />
+                            </IconButton>
+                            <Typography>
+                              {card._id === selectedLeader?._id ? 1 : 0}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              disabled={!!selectedLeader}
+                              onClick={() => handleSelectLeader(card)}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Styles.AddToDeckControls>
+                        </Grid>
+                      );
+                    })}
                   </Grid>
-                </Loading>
-              </AccordionDetails>
-            </Accordion>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === "base"}
+                onChange={handleExpandAccordion("base")}
+                TransitionProps={{
+                  timeout: ACCORDION_SPEED,
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="base-content"
+                  id="base-header"
+                >
+                  Base
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid container>
+                    {filteredBases.map((card, idx) => {
+                      return (
+                        <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={idx}>
+                          <SWUListCard
+                            key={idx}
+                            data={card}
+                            onClick={() => handleSelectCard(card)}
+                          />
+                          <Styles.AddToDeckControls>
+                            <IconButton
+                              size="small"
+                              disabled={
+                                !selectedBase || card._id !== selectedBase._id
+                              }
+                              onClick={() => handleSelectBase()}
+                            >
+                              <RemoveIcon />
+                            </IconButton>
+                            <Typography>
+                              {card._id === selectedBase?._id ? 1 : 0}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              disabled={!!selectedBase}
+                              onClick={() => handleSelectBase(card)}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Styles.AddToDeckControls>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === "cards"}
+                onChange={handleExpandAccordion("cards")}
+                TransitionProps={{
+                  timeout: ACCORDION_SPEED,
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="card-content"
+                  id="cards-header"
+                >
+                  Cards
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Loading loadCondition={fetchingCards}>
+                    <Grid container>
+                      <InfiniteScroll
+                        dataLength={currentShowing} //This is important field to render the next data
+                        next={() =>
+                          setCurrentShowing(
+                            Math.min(
+                              currentShowing + PAGINATION,
+                              filteredCards.length
+                            )
+                          )
+                        }
+                        hasMore={currentShowing < filteredCards.length}
+                        loader={<h4>Loading...</h4>}
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>Yay! You have seen it all</b>
+                          </p>
+                        }
+                      >
+                        <Grid container spacing={0.5} columns={12}>
+                          {filteredCards
+                            .slice(0, currentShowing)
+                            .map((card, idx) => {
+                              return (
+                                <Grid
+                                  size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
+                                  key={idx}
+                                >
+                                  <SWUListCard
+                                    key={idx}
+                                    data={card}
+                                    onClick={() => handleSelectCard(card)}
+                                  />
+                                  <Styles.AddToDeckControls>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleRemoveFromDeck(card)}
+                                    >
+                                      <RemoveIcon />
+                                    </IconButton>
+                                    <Typography>
+                                      {deckListCount[
+                                        card.set + "_" + convertId(card.number)
+                                      ] || 0}
+                                    </Typography>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleAddCardToDeck(card)}
+                                    >
+                                      <AddIcon />
+                                    </IconButton>
+                                  </Styles.AddToDeckControls>
+                                </Grid>
+                              );
+                            })}
+                        </Grid>
+                      </InfiniteScroll>
+                    </Grid>
+                  </Loading>
+                </AccordionDetails>
+              </Accordion>
+            </TabPanel>
+            <TabPanel value={activeTab} index={1}>
+              <DeckMaths deckList={deckList} />
+            </TabPanel>
           </Grid>
           {renderDeckEditor()}
         </Styles.CardContainer>

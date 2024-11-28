@@ -17,13 +17,13 @@ export function CardListProvider({ children }) {
   const [cardList, setCardList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [possibleFilters, setPossibleFilters] = useState({});
-  const [possibleLeaders, setPossibleLeaders] = useState([]);
-  const [possibleBases, setPossibleBases] = useState([]);
+  const [filteredLeaders, setFilteredLeaders] = useState([]);
+  const [filteredBases, setFilteredBases] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const [filter, setFilter] = useState({});
   const [emptyFilters, setEmptyFilter] = useState({});
   const [fetchingCards, setFetchingCards] = useState(true);
   const [sortForFilter, setSortForFilter] = useState();
-  const [onlyCardsFiltered, setOnlyCardsFiltered] = useState(false);
 
   useEffect(() => {
     const fetchFilters = async () => {
@@ -46,8 +46,6 @@ export function CardListProvider({ children }) {
     const fetchCardList = async () => {
       const allCards = await getAllCards();
       setCardList(allCards);
-      setPossibleLeaders(sortList(allCards.filter(({ type }) => type === "Leader"), "aspect"));
-      setPossibleBases(sortList(allCards.filter(({ type }) => type === "Base"), "aspect"));
     };
 
     fetchCardList();
@@ -65,15 +63,14 @@ export function CardListProvider({ children }) {
     async (filter) => {
       let filteredCards = await getAllCards(filter);
 
-      if (onlyCardsFiltered) {
-        filteredCards = filteredCards.filter(
-          ({ type }) => type !== "Base" && type !== "Leader"
-        );
-      }
 
       if (sortForFilter) {
         filteredCards = sortList(filteredCards, sortForFilter);
       }
+
+      setFilteredLeaders(filteredCards.filter(({ type }) => type === "Leader"));
+      setFilteredBases(filteredCards.filter(({ type }) => type === "Base"));
+      setFilteredCards(filteredCards.filter(({ type }) => type !== "Base" && type !== "Leader"));
 
       setFilteredList(filteredCards);
       setFetchingCards(false);
@@ -81,11 +78,10 @@ export function CardListProvider({ children }) {
     1000
   );
 
-  const applyFilters = (filters, sort, onlyCards = false) => {
+  const applyFilters = (filters, sort) => {
     setFetchingCards(true);
     setFilter(filters);
     setSortForFilter(sort);
-    setOnlyCardsFiltered(onlyCards);
 
     debounced(filters);
   };
@@ -111,8 +107,9 @@ export function CardListProvider({ children }) {
     getCardData,
     possibleFilters,
     fetchingCards,
-    possibleLeaders,
-    possibleBases
+    filteredLeaders,
+    filteredBases,
+    filteredCards
   };
 
   return <CardlistContext.Provider value={value}>{children}</CardlistContext.Provider>;
