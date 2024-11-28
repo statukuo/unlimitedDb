@@ -65,14 +65,24 @@ export function DeckMaths({ deckList }) {
   }));
 
   const calculateDrawProbability = (wantedCardsOnHand) => {
-    const amountOfCards = byCost.reduce((partialSum, a) => partialSum + a, 0);
-    const validCardCount = byCost[0] + byCost[1] + byCost[2];
+    try {
+      const amountOfCards = byCost.reduce((partialSum, a) => partialSum + a, 0);
+      const validCardCount = byCost[0] + byCost[1] + byCost[2];
 
-    return (
-      (combinations(validCardCount, wantedCardsOnHand) *
-        combinations(amountOfCards - validCardCount, 6 - wantedCardsOnHand)) /
-      combinations(amountOfCards, 6)
-    );
+      return (
+        Math.round(
+          ((combinations(validCardCount, wantedCardsOnHand) *
+            combinations(
+              amountOfCards - validCardCount,
+              6 - wantedCardsOnHand
+            )) /
+            combinations(amountOfCards, 6)) *
+            10000
+        ) / 100
+      );
+    } catch (error) {
+      return 0;
+    }
   };
 
   return (
@@ -152,27 +162,27 @@ export function DeckMaths({ deckList }) {
         </Typography>
         <Typography>
           Probability to draw 1 card to start with:{" "}
-          {Math.round(calculateDrawProbability(1) * 10000) / 100}%
+          {calculateDrawProbability(1)}%
         </Typography>
         <Typography>
           Probability to draw 2 card to start with:{" "}
-          {Math.round(calculateDrawProbability(2) * 10000) / 100}%
+          {calculateDrawProbability(2)}%
         </Typography>
         <Typography>
           Probability to draw 3 card to start with:{" "}
-          {Math.round(calculateDrawProbability(3) * 10000) / 100}%
+          {calculateDrawProbability(3)}%
         </Typography>
         <Typography>
           Probability to draw 4 card to start with:{" "}
-          {Math.round(calculateDrawProbability(4) * 10000) / 100}%
+          {calculateDrawProbability(4)}%
         </Typography>
         <Typography>
           Probability to draw 5 card to start with:{" "}
-          {Math.round(calculateDrawProbability(5) * 10000) / 100}%
+          {calculateDrawProbability(5)}%
         </Typography>
         <Typography>
           Probability to draw 6 card to start with:{" "}
-          {Math.round(calculateDrawProbability(6) * 10000) / 100}%
+          {calculateDrawProbability(6)}%
         </Typography>
       </Styles.DataContainer>
     </Grid>
