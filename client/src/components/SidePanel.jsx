@@ -20,12 +20,23 @@ const Styles = {
   `,
 };
 
-export function SidePanel({ children, extraBottom }) {
+export function SidePanel({
+  children,
+  extraBottom,
+  open,
+  setExternalOpen = () => {},
+}) {
   const [openPanel, setOpenPanel] = useState(false);
 
   return (
     <div>
-      <Styles.SidePanel open={openPanel} onClose={() => setOpenPanel(false)}>
+      <Styles.SidePanel
+        open={openPanel || open}
+        onClose={() => {
+          setOpenPanel(false);
+          setExternalOpen(false);
+        }}
+      >
         {children}
       </Styles.SidePanel>
       <Styles.Button

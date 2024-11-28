@@ -8,6 +8,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Grid2 as Grid,
   IconButton,
   Paper,
@@ -32,6 +33,8 @@ import { uploadDeck } from "../api/decks";
 import { useNavigate } from "react-router-dom";
 import { TabPanel } from "../components/TabPanel";
 import { DeckMaths } from "../components/DeckMaths";
+import { SortSelect } from "../components/SortSelect";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const PAGINATION = 36;
 const ACCORDION_SPEED = 500;
@@ -89,6 +92,8 @@ export function DeckCreatorPage({ deckData }) {
   const [needToLoadDeck, setNeedToLoadDeck] = useState(!!deckData);
   const [isPrivate, setIsPrivate] = useState(true);
   const [activeTab, setActiveTab] = React.useState(0);
+  const [sortMethod, setSortMethod] = useState("aspect");
+  const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
   const convertId = (n) => String(n).padStart(3, "0");
 
@@ -113,7 +118,7 @@ export function DeckCreatorPage({ deckData }) {
               )
           ),
         },
-        "aspect"
+        sortMethod
       );
     }
 
@@ -143,6 +148,10 @@ export function DeckCreatorPage({ deckData }) {
     }
   }, [deckData, possibleFilters, cardList]);
 
+  useEffect(() => {
+    applyFilters(filter, sortMethod);
+  }, [sortMethod]);
+
   const handleExpandAccordion = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -171,8 +180,7 @@ export function DeckCreatorPage({ deckData }) {
               )
           ),
         },
-        "aspect",
-        true
+        sortMethod
       );
     }
   };
@@ -194,8 +202,7 @@ export function DeckCreatorPage({ deckData }) {
               )
           ),
         },
-        "aspect",
-        true
+        sortMethod
       );
     }
   };
@@ -333,9 +340,13 @@ export function DeckCreatorPage({ deckData }) {
 
   return (
     <BasePage>
-      <Loading loadCondition={(deckData && fetchingCards) || needToLoadDeck}>
-        <SidePanel extraBottom={renderMedium}>
-          <CardFilter activeFilters={filter} onlyCards={true} />
+      <Loading loadCondition={needToLoadDeck}>
+        <SidePanel
+          extraBottom={renderMedium}
+          open={filterOpen}
+          setExternalOpen={setFilterOpen}
+        >
+          <CardFilter activeFilters={filter} />
         </SidePanel>
         <CardDialog
           cardData={clickedCard}
@@ -353,8 +364,24 @@ export function DeckCreatorPage({ deckData }) {
               <Tab label="Cards" />
               <Tab label="Maths" />
             </Tabs>
-
             <TabPanel value={activeTab} index={0}>
+              <Grid container align="center">
+                <Grid size={{ xs: 6 }} alignContent="center">
+                  <Button
+                    onClick={() => setFilterOpen(true)}
+                    variant="contained"
+                  >
+                    <FilterAltIcon />
+                    Filters
+                  </Button>
+                </Grid>
+                <Grid size={{ xs: 6 }} p={1}>
+                  <SortSelect
+                    sortMethod={sortMethod}
+                    setSortMethod={setSortMethod}
+                  />
+                </Grid>
+              </Grid>
               <Accordion
                 expanded={expanded === "leader"}
                 onChange={handleExpandAccordion("leader")}
