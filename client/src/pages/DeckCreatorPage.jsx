@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SWUListCard } from "../components/SWUListCard";
 import styled from "styled-components";
 import { CardFilter } from "../components/CardFilter";
@@ -84,18 +84,17 @@ export function DeckCreatorPage({ deckData }) {
   const [currentShowing, setCurrentShowing] = useState(PAGINATION);
   const [clickedCard, setClickedCard] = useState(false);
   const [expanded, setExpanded] = React.useState("leader");
-  const [deckName, setDeckName] = useState("Change this");
   const [selectedLeader, setSelectedLeader] = useState(null);
   const [selectedBase, setSelectedBase] = useState(null);
   const [deckList, setDeckList] = useState([]);
   const [deckListCount, setDeckListCount] = useState({});
   const [needToLoadDeck, setNeedToLoadDeck] = useState(!!deckData);
-  const [isPrivate, setIsPrivate] = useState(true);
   const [activeTab, setActiveTab] = React.useState(0);
   const [sortMethod, setSortMethod] = useState("aspect");
   const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
   const convertId = (n) => String(n).padStart(3, "0");
+  const deckEditorComponent = useRef();
 
   useEffect(() => {
     if (!possibleFilters.aspects || !cardList.length) {
@@ -121,12 +120,6 @@ export function DeckCreatorPage({ deckData }) {
         sortMethod
       );
     }
-
-    if (deckData?.name) {
-      setDeckName(deckData.name);
-    }
-
-    setIsPrivate(!!deckData?.private);
 
     if (deckData?.list) {
       setDeckList(
@@ -164,6 +157,7 @@ export function DeckCreatorPage({ deckData }) {
   };
 
   const handleSelectLeader = (card) => {
+    console.log(deckEditorComponent?.current);
     setSelectedLeader(card);
     setExpanded(card ? "base" : "leader");
 
@@ -269,7 +263,7 @@ export function DeckCreatorPage({ deckData }) {
     }
 
     deckToUpload.metadata = {
-      name: deckName,
+      name: deckEditorComponent.current.deckName,
     };
     deckToUpload.leader = {
       id: selectedLeader.set + "_" + convertId(selectedLeader.number),
@@ -287,7 +281,10 @@ export function DeckCreatorPage({ deckData }) {
       };
     });
 
-    const res = await uploadDeck(JSON.stringify(deckToUpload), isPrivate);
+    const res = await uploadDeck(
+      JSON.stringify(deckToUpload),
+      deckEditorComponent.current.isPrivate
+    );
 
     navigate("/deck/" + res._id);
   };
@@ -303,13 +300,12 @@ export function DeckCreatorPage({ deckData }) {
   const renderDeckEditor = () => {
     const deckEditor = (
       <DeckEditor
-        isPrivate={isPrivate}
+        ref={deckEditorComponent}
+        loadedIsPrivate={deckData?.private}
+        loadedDeckName={deckData?.title}
         selectedLeader={selectedLeader}
-        deckName={deckName}
         deckList={deckList}
         selectedBase={selectedBase}
-        handleSetPrivate={setIsPrivate}
-        handleDeckNameChange={setDeckName}
         handleAddCardToDeck={handleAddCardToDeck}
         handleRemoveFromDeck={handleRemoveFromDeck}
         handleSelectCard={handleSelectCard}
