@@ -25,6 +25,7 @@ import { LikeAndCommentCounter } from "../components/LikeAndCommentCounters";
 import { TabPanel } from "../components/TabPanel";
 import { DeckMaths } from "../components/DeckMaths";
 import { SortSelect } from "../components/SortSelect";
+import { DeckComments } from "../components/DeckComments";
 
 const Styles = {
   ButtonGroup: styled(ButtonGroup)`
@@ -202,6 +203,7 @@ export function DeckDetails() {
               >
                 <Tab label="Cards" />
                 <Tab label="Maths" />
+                <Tab label="Description" />
               </Tabs>
             </Grid>
           </ContentRowWithDivider>
@@ -252,6 +254,10 @@ export function DeckDetails() {
 
           <TabPanel value={activeTab} index={1}>
             <DeckMaths deckList={list} />
+          </TabPanel>
+
+          <TabPanel value={activeTab} index={2}>
+            <DeckComments description={deckData?.description} />
           </TabPanel>
         </Grid>
       </Loading>

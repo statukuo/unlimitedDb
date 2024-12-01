@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-export const TextInput = forwardRef(({ loadedInput, label }, _ref) => {
+export const TextInput = forwardRef(({ loadedInput, label, rows }, _ref) => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
@@ -26,6 +26,9 @@ export const TextInput = forwardRef(({ loadedInput, label }, _ref) => {
       variant="outlined"
       align="center"
       value={value}
+      multiline={!!rows}
+      fullWidth
+      rows={rows}
       onChange={(event) => setValue(event.target.value)}
     />
   );
