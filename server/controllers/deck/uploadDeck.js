@@ -17,7 +17,8 @@ async function uploadDeck(request, response) {
         list: deck.deck.map(card => { return { id: card.id, count: card.count }; }),
         sideboard: deck.sideboard.map(card => { return { id: card.id, count: card.count }; }),
         ownerId: request.auth.uid,
-        private: !!isPrivate
+        private: !!isPrivate,
+        description: deck.description || ""
     };
 
     let result;

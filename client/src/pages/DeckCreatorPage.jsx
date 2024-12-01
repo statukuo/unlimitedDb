@@ -35,6 +35,7 @@ import { TabPanel } from "../components/TabPanel";
 import { DeckMaths } from "../components/DeckMaths";
 import { SortSelect } from "../components/SortSelect";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { TextInput } from "../components/TextInput";
 
 const PAGINATION = 36;
 const ACCORDION_SPEED = 500;
@@ -92,9 +93,11 @@ export function DeckCreatorPage({ deckData }) {
   const [activeTab, setActiveTab] = React.useState(0);
   const [sortMethod, setSortMethod] = useState("aspect");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(null);
   const navigate = useNavigate();
   const convertId = (n) => String(n).padStart(3, "0");
   const deckEditorComponent = useRef();
+  const deckDescriptionComponent = useRef();
 
   useEffect(() => {
     if (!possibleFilters.aspects || !cardList.length) {
@@ -144,6 +147,13 @@ export function DeckCreatorPage({ deckData }) {
   useEffect(() => {
     applyFilters(filter, sortMethod);
   }, [sortMethod]);
+
+  const switchTab = (nexttabId) => {
+    setActiveTab(nexttabId);
+    if (deckDescriptionComponent.current) {
+      setEditedDescription(deckDescriptionComponent.current.value);
+    }
+  };
 
   const handleExpandAccordion = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -281,6 +291,13 @@ export function DeckCreatorPage({ deckData }) {
       };
     });
 
+    if (editedDescription || deckDescriptionComponent.current) {
+      deckToUpload.description =
+        editedDescription || deckDescriptionComponent.current.value;
+    } else {
+      deckToUpload.description = deckData.description;
+    }
+
     const res = await uploadDeck(
       JSON.stringify(deckToUpload),
       deckEditorComponent.current.isPrivate
@@ -353,12 +370,13 @@ export function DeckCreatorPage({ deckData }) {
           <Grid size={{ xs: 12, md: 8 }}>
             <Tabs
               value={activeTab}
-              onChange={(_, nextValue) => setActiveTab(nextValue)}
+              onChange={(_, nextValue) => switchTab(nextValue)}
               aria-label="basic tabs example"
               centered
             >
               <Tab label="Cards" />
               <Tab label="Maths" />
+              <Tab label="Description" />
             </Tabs>
             <TabPanel value={activeTab} index={0}>
               <Grid container align="center">
@@ -562,6 +580,22 @@ export function DeckCreatorPage({ deckData }) {
             </TabPanel>
             <TabPanel value={activeTab} index={1}>
               <DeckMaths deckList={deckList} />
+            </TabPanel>
+            <TabPanel value={activeTab} index={2}>
+              <Grid container>
+                <Grid size={{ xs: 12 }} m={2}>
+                  <Typography variant="h4" align="center">
+                    Description
+                  </Typography>
+
+                  <TextInput
+                    label="Description"
+                    loadedInput={deckData?.description}
+                    rows={10}
+                    ref={deckDescriptionComponent}
+                  />
+                </Grid>
+              </Grid>
             </TabPanel>
           </Grid>
           {renderDeckEditor()}
