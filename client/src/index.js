@@ -73,7 +73,11 @@ const router = createBrowserRouter([
   },
 ]);
 
-let theme = createTheme();
+let theme = createTheme({
+  typography: {
+    fontSize: 13,
+  },
+});
 theme = responsiveFontSizes(theme);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
