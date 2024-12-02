@@ -57,6 +57,7 @@ const Styles = {
   `,
   CardInfoCount: styled(Grid)`
     display: flex;
+    justify-content: space-evenly;
     backdrop-filter: blur(10px);
     align-content: center;
     align-items: center;
@@ -126,36 +127,45 @@ export function SWUCardDeckSmall({
 
   const createEditableButtons = () => {
     return (
-      <Grid container>
-        <Grid size={6}>
-          <Typography align="center" variant="h4">
-            {data.count}
-          </Typography>
+      <Styles.CardInfoCount size={{ xs: 3 }} offset={{ xs: 2 }}>
+        <Grid container width="100%">
+          <Grid size={4} alignContent="center">
+            <IconButton
+              aria-label="delete"
+              size="small"
+              onClick={handleRemoveClick}
+            >
+              <RemoveCircleIcon fontSize="inherit" />
+            </IconButton>
+          </Grid>
+          <Grid size={4}>
+            <Typography align="center" variant="h4">
+              {data.count}
+            </Typography>
+          </Grid>
+          <Grid size={4} alignContent="center">
+            <IconButton
+              aria-label="delete"
+              size="small"
+              onClick={handleAddClick}
+            >
+              <AddCircleIcon fontSize="inherit" />
+            </IconButton>
+          </Grid>
         </Grid>
-        <Styles.CardButtons size={6}>
-          <IconButton aria-label="delete" size="small" onClick={handleAddClick}>
-            <AddCircleIcon fontSize="inherit" />
-          </IconButton>
-          <Divider orientation="horizontal" color="white" flexItem />
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={handleRemoveClick}
-          >
-            <RemoveCircleIcon fontSize="inherit" />
-          </IconButton>
-        </Styles.CardButtons>
-      </Grid>
+      </Styles.CardInfoCount>
     );
   };
 
   const createCount = () => {
     return (
-      <Grid size={12}>
-        <Typography align="center" variant="h3">
-          {data.count}
-        </Typography>
-      </Grid>
+      <Styles.CardInfoCount size={{ xs: 2 }} offset={{ xs: 3 }}>
+        <Grid size={12}>
+          <Typography align="center" variant="h3">
+            {data.count}
+          </Typography>
+        </Grid>
+      </Styles.CardInfoCount>
     );
   };
 
@@ -184,10 +194,8 @@ export function SWUCardDeckSmall({
           </Typography>
           <Typography align="left">Cost: {data.cost}</Typography>
         </Styles.CardInfoText>
-        <Styles.CardInfoGradient size={{ xs: 2 }} />
-        <Styles.CardInfoCount size={{ xs: 2 }} offset={{ xs: 2 }}>
-          {editable ? createEditableButtons() : createCount()}
-        </Styles.CardInfoCount>
+        <Styles.CardInfoGradient size={{ xs: 1 }} />
+        {editable ? createEditableButtons() : createCount()}
       </Styles.CardInfo>
     </Styles.CardList>
   );
